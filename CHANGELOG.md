@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.1.2
+
+### Patch Changes
+
+- bump version to 0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
