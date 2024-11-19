@@ -1,0 +1,18 @@
+{
+  "entryPoints": [
+    "src/hooks/async",
+    "src/hooks/dom",
+    "src/hooks/state",
+    "src/utils"
+  ],
+  "out": "docs/api", // Output directory
+  "plugin": ["typedoc-plugin-markdown"], // Use the markdown plugin
+  "tsconfig": "tsconfig.json", // Use this tsconfig file
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "hideGenerator": true,
+  "readme": "none",
+  "categorizeByGroup": true,
+  "sort": ["source-order"]
+}

@@ -1,0 +1,47 @@
+# Detect if this is a tag push
+if [ "$SKIP_HOOK" = "true" ]; then
+  echo "Skipping pre-push hook."
+  exit 0
+fi
+
+echo "Running tests..."
+pnpm run test:ci
+
+if [ $? -ne 0 ]; then
+  echo "Tests failed. Aborting push."
+  exit 1
+fi
+
+echo "Running changeset version check..."
+pnpm changeset version
+echo "Running changeset version check...done"
+
+# Auto-tag or reuse existing tag
+VERSION=$(jq -r '.version' < package.json)
+
+if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+  echo "Tag v$VERSION already exists."
+else
+  echo "Tagging version v$VERSION..."
+  SKIP_HOOK=true git tag "v$VERSION"
+fi
+
+# Enable interactive mode
+exec < /dev/tty
+
+# Prompt user to push the tag
+echo "Do you want to push the tag v$VERSION to the remote repository? (default: y)"
+read -r CONFIRM
+
+if [ "$CONFIRM" = "n" ]; then
+  echo "Skipped pushing tag v$VERSION."
+else
+  echo "Do you want to force push the tag v$VERSION? (default: n)"
+  read -r FORCE_CONFIRM
+
+  if [ "$FORCE_CONFIRM" = "y" ]; then
+    SKIP_HOOK=true git push --force origin "v$VERSION" && echo "Tag v$VERSION force pushed successfully."
+  else
+    SKIP_HOOK=true git push origin "v$VERSION" && echo "Tag v$VERSION pushed successfully."
+  fi
+fi

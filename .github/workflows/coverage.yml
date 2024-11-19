@@ -1,0 +1,43 @@
+name: 🧪 Generate Coverage Report
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+      - 'bugfix/**'
+      - 'feat/**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: 🛎️ Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js and pnpm
+      - name: 📦 Set up Node.js and pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: true
+
+      # Step 3: Run tests and generate coverage
+      - name: ✅ Run tests with coverage
+        run: pnpm run test:ci
+
+      # Step 4: Upload coverage report as an artifact
+      - name: 📤 Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/
+
+      # Step 5: Show a summary
+      - name: 💡 Show coverage summary
+        run: |
+          cat coverage/lcov-report/index.html || echo "Coverage summary unavailable"
