@@ -40,11 +40,7 @@ jobs:
 
       # Step 5: Set package version from tag
       - name: 🚀 Publish to NPM
-        run: |
-          VERSION="${GITHUB_REF#refs/tags/v}"
-          echo "Setting package version to $VERSION"
-          pnpm version "$VERSION" --no-git-tag-version
-          pnpm publish --no-git-checks --access public --registry=https://registry.npmjs.org/
+        run: pnpm publish --no-git-checks --access public --registry=https://registry.npmjs.org/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
