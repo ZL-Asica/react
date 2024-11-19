@@ -16,21 +16,22 @@ jobs:
     name: Run tests and collect coverage
     runs-on: ubuntu-latest
     steps:
-      - name: 🛎️ Checkout
+      # Step 1: Checkout code
+      - name: 📂 Checkout code
         uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js and pnpm
+      - name: 📦 Set up Node.js and pnpm
+        uses: pnpm/action-setup@v4
         with:
-          fetch-depth: 0
-
-      - name: 📦 Set up Node
-        uses: actions/setup-node@v4
-
-      - name: 🛠️ Install dependencies
-        run: npm install
+          run_install: true
 
       - name: ✅ Run tests
-        run: npx vitest run --coverage
+        run: pnpm run test:ci
 
       - name: 📤 Upload results to Codecov
         uses: codecov/codecov-action@v4
         with:
+          files: ./coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true

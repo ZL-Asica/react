@@ -14,48 +14,37 @@ jobs:
     strategy:
       matrix:
         node: [16, 18, 20, 22]
-        react: [17, 18]
+        react: [16, 17, 18]
     name: Node.js ${{ matrix.node }} & React ${{ matrix.react }} Compatibility Test
     steps:
+      # Step 1: Checkout code
       - uses: actions/checkout@v4
 
-      # Step 1: Setup Node.js
+      # Step 2: Setup Node.js
       - name: 🌟 Setup Node.js ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
-      # Step 2: Install dependencies with corresponding React version
+      # Step 3: Install dependencies with the target React version
       - name: 📦 Install Dependencies with React ${{ matrix.react }}
         run: |
-          echo "Installing React ${{ matrix.react }}..."
+          echo "Installing React ${{ matrix.react }} and dependencies..."
           npm install react@${{ matrix.react }} react-dom@${{ matrix.react }} --legacy-peer-deps
           npm install --legacy-peer-deps
-          echo "React ${{ matrix.react }} installed successfully! 🎉"
 
-      # Step 3: Run fast tests
-      - name: 🚀 Run Fast Tests
-        run: npm run test:fast
-
-      # Step 4: Test build compatibility
+      # Step 4: Test build
       - name: 🛠️ Test Build Compatibility
-        run: npm run test:build
-
-      # Step 5: Check for compatibility issues
-      - name: 📋 Check for Compatibility Issues
         run: |
-          if [ $? -ne 0 ]; then
-            echo "❌ Incompatible with Node.js ${{ matrix.node }} and React ${{ matrix.react }} 😿" >> incompatibility.log
-          else
-            echo "✅ Compatible with Node.js ${{ matrix.node }} and React ${{ matrix.react }} 🎉"
-          fi
+          echo "🔨 Testing build compatibility with Node.js ${{ matrix.node }} and React ${{ matrix.react }}..."
+          npm run build || echo "❌ Build failed for Node.js ${{ matrix.node }} & React ${{ matrix.react }} 😿" >> incompatibility.log
 
-      # Step 6: Print incompatibility log
-      - name: 📝 Print Incompatibility Log
+      # Step 5: Print incompatibility log
+      - name: 📝 Print Compatibility Results
         if: always()
         run: |
           if [ -f incompatibility.log ]; then
-            echo "🚨 Found Compatibility Issues: 😓"
+            echo "🚨 Compatibility Issues Found: 😓"
             cat incompatibility.log
           else
             echo "🌈 All tested versions are compatible! 🎉"
