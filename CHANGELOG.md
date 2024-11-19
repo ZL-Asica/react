@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.1.4
+
+### Patch Changes
+
+- Bump up to test new workflow
+
 ## 0.1.3
 
 ### Patch Changes
