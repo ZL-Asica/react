@@ -19,34 +19,26 @@ jobs:
       - name: 📂 Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js and enable caching
-      - name: 🔧 Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
-
-      # Step 3: Set up pnpm
+      # Step 2: Set up pnpm
       - name: 📦 Set up pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
           run_install: |
             - recursive: true
               args: [--frozen-lockfile, --strict-peer-dependencies]
 
-      # Step 4: Lint, format, and test
+      # Step 3: Lint, format, and test
       - name: 🎨 Lint, format, and test
         run: |
           pnpm run lint:fix
           pnpm run format
           pnpm run test:fast
 
-      # Step 5: Build the package
+      # Step 4: Build the package
       - name: 🏗️ Build the package
         run: pnpm run build
 
-      # Step 6: Set package version from tag
+      # Step 5: Set package version from tag
       - name: 🚀 Publish to NPM
         run: |
           VERSION="${GITHUB_REF#refs/tags/v}"
@@ -56,7 +48,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # Step 7: Publish to GitHub Packages
+      # Step 6: Publish to GitHub Packages
       - name: 🏡 Publish to GitHub Packages
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
@@ -64,7 +56,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 8: Build and deploy documentation
+      # Step 7: Build and deploy documentation
       - name: 📘 Build and Deploy Documentation
         run: |
           pnpm run docs
