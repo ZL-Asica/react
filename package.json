@@ -38,6 +38,7 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest",
+    "version:bump": "changeset version",
     "release": "changeset version && changeset publish",
     "test:fast": "vitest run",
     "test:ci": "vitest run --coverage",
