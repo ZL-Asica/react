@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.1.1
+
+### Patch Changes
+
+- b588129: Update package.json
+
 ## 0.1.0
 
 ### ✨ Minor Changes
