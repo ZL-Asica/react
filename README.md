@@ -2,6 +2,7 @@
 
 [![npm version][npm-version-badge]][npm-versions-link]
 [![License][license-badge]][license-link]
+[![Coverage][coverage-badge]][coverage-link]
 [![Node.js][node-badge]][node-link]
 [![pnpm Version][pnpm-badge]][pnpm-link] |
 [![React][react-badge]][react-link]
@@ -61,15 +62,17 @@ This project is licensed under the [MIT License](./LICENSE).
 
 <!-- Badges / Links -->
 
+[coverage-badge]: https://img.shields.io/codecov/c/github/ZL-Asica/React
+[coverage-link]: https://codecov.io/gh/ZL-Asica/React
 [eslint-badge]: https://img.shields.io/badge/eslint-4B32C3?logo=eslint&logoColor=white
 [eslint-link]: https://www.npmjs.com/package/eslint-config-zl-asica
-[license-badge]: https://img.shields.io/github/license/ZL-Asica/react
-[license-link]: https://github.com/ZL-Asica/react/blob/main/LICENSE
+[license-badge]: https://img.shields.io/github/license/ZL-Asica/React
+[license-link]: https://github.com/ZL-Asica/React/blob/main/LICENSE
 [node-badge]: https://img.shields.io/badge/node%3E=16-339933?logo=node.js&logoColor=white
 [node-link]: https://nodejs.org/
 [npm-version-badge]: https://img.shields.io/npm/v/@zl-asica/react
 [npm-versions-link]: https://www.npmjs.com/package/@zl-asica/react
-[pnpm-badge]: https://img.shields.io/github/package-json/packageManager/ZL-Asica/react?label=&logo=pnpm&logoColor=fff&color=F69220
+[pnpm-badge]: https://img.shields.io/github/package-json/packageManager/ZL-Asica/React?label=&logo=pnpm&logoColor=fff&color=F69220
 [pnpm-link]: https://pnpm.io/
 [prettier-badge]: https://img.shields.io/badge/Prettier-F7B93E?logo=Prettier&logoColor=white
 [prettier-link]: https://www.npmjs.com/package/@zl-asica/prettier-config

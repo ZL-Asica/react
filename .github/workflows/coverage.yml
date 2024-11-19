@@ -1,4 +1,4 @@
-name: 🧪 Generate Coverage Report
+name: 🧪 Generate Coverage Report to Codecov
 
 on:
   push:
@@ -12,32 +12,25 @@ on:
       - main
 
 jobs:
-  coverage:
+  test:
+    name: Run tests and collect coverage
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Checkout the code
-      - name: 🛎️ Checkout code
+      - name: 🛎️ Checkout
         uses: actions/checkout@v4
-
-      # Step 2: Set up Node.js and pnpm
-      - name: 📦 Set up Node.js and pnpm
-        uses: pnpm/action-setup@v4
         with:
-          run_install: true
+          fetch-depth: 0
 
-      # Step 3: Run tests and generate coverage
-      - name: ✅ Run tests with coverage
-        run: pnpm run test:ci
+      - name: 📦 Set up Node
+        uses: actions/setup-node@v4
 
-      # Step 4: Upload coverage report as an artifact
-      - name: 📤 Upload coverage report
-        uses: actions/upload-artifact@v3
+      - name: 🛠️ Install dependencies
+        run: npm install
+
+      - name: ✅ Run tests
+        run: npx vitest run --coverage
+
+      - name: 📤 Upload results to Codecov
+        uses: codecov/codecov-action@v4
         with:
-          name: coverage-report
-          path: coverage/
-
-      # Step 5: Show a summary
-      - name: 💡 Show coverage summary
-        run: |
-          cat coverage/lcov-report/index.html || echo "Coverage summary unavailable"
+          token: ${{ secrets.CODECOV_TOKEN }}
