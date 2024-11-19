@@ -39,7 +39,7 @@ jobs:
 
       # # Step 5: Publish to NPM
       # - name: 🚀 Publish to NPM
-      #   run: pnpm changeset publish
+      #   run: pnpm changeset publish --no-git-checks
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # NPM token for authentication
 
@@ -49,4 +49,4 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub token for authentication
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
-          pnpm publish --registry=https://npm.pkg.github.com/
+          pnpm publish --registry=https://npm.pkg.github.com/ --no-git-checks
