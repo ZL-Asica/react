@@ -45,10 +45,8 @@
     "lint": "eslint src/**/*",
     "lint:fix": "eslint src/**/* --fix",
     "format": "prettier --write .",
-    "docs": "typedoc && pnpm docs:clean",
+    "docs": "typedoc",
     "docs:clean": "node fix-markdown.mjs",
-    "docs:add": "pnpm run docs && git add docs/api",
-    "prepublishOnly": "pnpm build",
     "docs:dev": "vitepress dev docs --open",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs --open"
