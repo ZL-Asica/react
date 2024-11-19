@@ -1,0 +1,75 @@
+name: 🏷️ Publish Package and Deploy Docs
+
+on:
+  push:
+    tags:
+      - 'v*' # Only trigger when a version tag is pushed, like v1.0.0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Required for GitHub Packages
+      packages: write # Required for NPM publish
+
+    steps:
+      # Step 1: Checkout code
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js and pnpm
+      - name: 📦 Set up Node.js and pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: true # Automatically run pnpm install
+
+      # Step 3: Run lint and format
+      - name: 🎨 Lint and format code
+        run: |
+          pnpm run lint:fix
+          pnpm run format
+          pnpm run test:fast
+
+      # Step 4: Build the package
+      - name: 🏗️ Build the package
+        run: |
+          pnpm run build
+
+      # Step 5: Publish to NPM
+      - name: 🚀 Publish to NPM
+        run: pnpm changeset publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # NPM token for authentication
+
+      # Step 6: Publish to GitHub Packages
+      - name: 🏡 Publish to GitHub Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub token for authentication
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
+          pnpm publish --registry=https://npm.pkg.github.com/
+
+  deploy-vitePress:
+    runs-on: ubuntu-latest
+    needs:
+      - publish
+
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Set up Node.js and pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: true
+
+      - name: 📝 Build the documentation
+        run: pnpm run docs && pnpm run docs:build
+
+      - name: 🚀 Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/.vitepress/dist
+          branch: docs
+          token: ${{ secrets.GITHUB_TOKEN }}

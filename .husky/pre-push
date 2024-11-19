@@ -1,0 +1,22 @@
+echo "Running tests..."
+pnpm run test:ci
+
+if [ $? -ne 0 ]; then
+  echo "Tests failed. Aborting push."
+  exit 1
+fi
+
+echo "Running changeset version check..."
+pnpm changeset version
+echo "Running changeset version check...done"
+
+# Auto-tag the latest version
+VERSION=$(jq -r '.version' < package.json)
+if [ -n "$VERSION" ]; then
+  echo "Tagging version v$VERSION..."
+  git tag "v$VERSION"
+  git push --tags
+  echo "Tag v$VERSION pushed."
+else
+  echo "Version not found in package.json. Skipping tagging."
+fi

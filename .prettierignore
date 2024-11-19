@@ -1,0 +1,21 @@
+# Ignore build output and dependency directories
+node_modules/
+dist/
+build/
+
+# Ignore logs and system files
+*.log
+.DS_Store
+
+# Ignore documentation or large data files
+docs/.vuepress/dist/
+docs/.vuepress/public/
+docs/.vuepress/cache/
+data/
+
+# Ignore other files typically not needing formatting
+*.min.js
+*.lock
+
+.changeset/
+.husky/
