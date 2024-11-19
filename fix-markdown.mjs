@@ -1,35 +1,46 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const documentationDirectory = path.resolve('./docs/api');
+const documentationDirectory = path.resolve('./docs/docs');
 
+// Rename README.md to index.md and fix links containing 'functions/'
 function renameREADMEtoIndex(filePath) {
   const newPath = path.join(path.dirname(filePath), 'index.md');
+
+  // Read file content and fix 'functions/' links
+  let content = fs.readFileSync(filePath, 'utf8');
+  content = content.replaceAll('functions/', './');
+
+  // Write the fixed content back
+  fs.writeFileSync(filePath, content, 'utf8');
+
+  // Rename the file
   fs.renameSync(filePath, newPath);
+  console.log(`Renamed ${filePath} to ${newPath} and fixed links.`);
 }
 
+// Fix Markdown content
 function fixMarkdown(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
   const lines = content.split('\n');
   const newContent = lines.slice(6);
   const newLines = [];
 
-  // Flags to track sections
   let skipCurrentLine = false;
 
   for (let line of newContent) {
-    // Determine if the current line should be skipped
     if (line.startsWith('## Index') || line.startsWith('### Functions')) {
-      skipCurrentLine = true; // Skip this specific line
+      skipCurrentLine = true;
     } else if (line.startsWith('## Modules')) {
-      // Replace ## Modules with # Modules
-      line = line.replace('## Modules', '# Modules');
-      skipCurrentLine = false; // Don't skip, we processed this line
+      line = line.replace('## Modules', '# Documentation');
+      skipCurrentLine = false;
+    } else if (line.startsWith('# Function:')) {
+      line = line.replace('# Function:', '#');
+      skipCurrentLine = false;
     } else {
-      skipCurrentLine = false; // Reset skip flag for other lines
+      skipCurrentLine = false;
     }
 
-    // Apply general replacements for other lines
     if (!skipCurrentLine) {
       line = line
         .replaceAll(/README.md/g, '')
@@ -38,17 +49,47 @@ function fixMarkdown(filePath) {
     }
   }
 
-  // Join the processed lines and write them back to the file
   const fixedContent = newLines.join('\n');
   fs.writeFileSync(filePath, fixedContent, 'utf8');
 }
 
+// Move files out of 'functions' folder and delete the folder
+function moveOutFunctions(directory) {
+  const functionsDirectory = path.join(directory, 'functions');
+  if (
+    fs.existsSync(functionsDirectory) &&
+    fs.statSync(functionsDirectory).isDirectory()
+  ) {
+    const files = fs.readdirSync(functionsDirectory);
+
+    // Move all files to the parent directory
+    for (const file of files) {
+      const oldPath = path.join(functionsDirectory, file);
+      const newPath = path.join(directory, file);
+      fs.renameSync(oldPath, newPath);
+      console.log(`Moved ${file} to ${directory}`);
+    }
+
+    // Delete the 'functions' folder if it's empty
+    fs.rmdirSync(functionsDirectory);
+    console.log(`Deleted empty folder: ${functionsDirectory}`);
+  }
+}
+
+// Traverse and process documents
 function traverseDocuments(directory) {
   const files = fs.readdirSync(directory);
+
   for (const file of files) {
     const fullPath = path.join(directory, file);
+
     if (fs.statSync(fullPath).isDirectory()) {
       traverseDocuments(fullPath);
+
+      // Handle 'functions' directory specifically
+      if (path.basename(fullPath) === 'functions') {
+        moveOutFunctions(path.dirname(fullPath));
+      }
     } else if (file.endsWith('.md')) {
       console.log(`Processing file: ${file}`);
       fixMarkdown(fullPath);

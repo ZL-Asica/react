@@ -1,4 +1,4 @@
-name: 🏷️ Publish Package and Deploy Docs
+name: 🏷️ Publish and Deploy Documentation
 
 on:
   push:
@@ -19,34 +19,62 @@ jobs:
       - name: 📂 Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js and pnpm
-      - name: 📦 Set up Node.js and pnpm
+      # Step 2: Set up Node.js and enable caching
+      - name: 🔧 Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'pnpm'
+
+      # Step 3: Set up pnpm
+      - name: 📦 Set up pnpm
         uses: pnpm/action-setup@v4
         with:
-          run_install: true # Automatically run pnpm install
+          version: 9
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
 
-      # Step 3: Run lint and format
-      - name: 🎨 Lint and format code
+      # Step 4: Lint, format, and test
+      - name: 🎨 Lint, format, and test
         run: |
           pnpm run lint:fix
           pnpm run format
           pnpm run test:fast
 
-      # Step 4: Build the package
+      # Step 5: Build the package
       - name: 🏗️ Build the package
+        run: pnpm run build
+
+      # Step 6: Set package version from tag
+      - name: 🚀 Publish to NPM
         run: |
-          pnpm run build
-
-      # # Step 5: Publish to NPM
-      # - name: 🚀 Publish to NPM
-      #   run: pnpm changeset publish --no-git-checks
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # NPM token for authentication
-
-      # Step 6: Publish to GitHub Packages
-      - name: 🏡 Publish to GitHub Packages
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "Setting package version to $VERSION"
+          pnpm version "$VERSION" --no-git-tag-version
+          pnpm publish --no-git-checks --access public --registry=https://registry.npmjs.org/
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub token for authentication
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Step 7: Publish to GitHub Packages
+      - name: 🏡 Publish to GitHub Packages
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
           pnpm publish --registry=https://npm.pkg.github.com/ --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 8: Build and deploy documentation
+      - name: 📘 Build and Deploy Documentation
+        run: |
+          pnpm run docs
+          pnpm run docs:build
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🚀 Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/.vitepress/dist
+          branch: docs
+          token: ${{ secrets.GITHUB_TOKEN }}

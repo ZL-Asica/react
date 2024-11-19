@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.1.3
+
+### Patch Changes
+
+- Update documentation site structure
+
 ## 0.1.2
 
 ### Patch Changes

@@ -1,7 +1,10 @@
+import path from 'node:path';
+
 import { defineConfig } from 'vitepress';
+import { withSidebar } from 'vitepress-sidebar';
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+const vitePressConfig = {
   lang: 'en-US',
   title: '@zl-asica/react',
   description:
@@ -46,22 +49,22 @@ export default defineConfig({
     logo: '/logo.png',
     nav: [
       { text: 'Guide', link: '/guide' },
-      { text: 'API', link: '/api/' },
+      { text: 'Docs', link: '/docs/' },
       { text: 'GitHub', link: 'https://github.com/zl-asica/react' },
     ],
     sidebar: {
-      '/api/': [
-        {
-          text: 'API Documentation',
-          collapsed: false,
-          items: [
-            { text: 'Async Hooks', link: '/api/hooks/async/' },
-            { text: 'DOM Hooks', link: '/api/hooks/dom/' },
-            { text: 'State Hooks', link: '/api/hooks/state/' },
-            { text: 'Utilities', link: '/api/utils' },
-          ],
-        },
-      ],
+      // '/api/': [
+      //   {
+      //     text: 'API Documentation',
+      //     collapsed: false,
+      //     items: [
+      //       { text: 'Async Hooks', link: '/api/hooks/async/' },
+      //       { text: 'DOM Hooks', link: '/api/hooks/dom/' },
+      //       { text: 'State Hooks', link: '/api/hooks/state/' },
+      //       { text: 'Utilities', link: '/api/utils' },
+      //     ],
+      //   },
+      // ],
       '/': [
         {
           text: 'Documentation',
@@ -78,8 +81,24 @@ export default defineConfig({
     },
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright ©️ 2024-Present ZL Asica',
+      copyright:
+        'Copyright ©️ 2024-Present <a href="https://www.zla.pub" target="_blank">ZL Asica</a>',
     },
   },
   ignoreDeadLinks: true,
-});
+};
+
+export default defineConfig(
+  // @ts-expect-error: `withSidebar` is not part of the official VitePress config.
+  withSidebar(vitePressConfig, [
+    {
+      documentRootPath: path.resolve('/docs'),
+      scanStartPath: 'docs',
+      collapsed: false,
+      useTitleFromFileHeading: true,
+      rootGroupText: 'Documentation',
+      resolvePath: '/docs/',
+      useFolderLinkFromIndexFile: true,
+    },
+  ])
+);

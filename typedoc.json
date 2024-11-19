@@ -5,7 +5,7 @@
     "src/hooks/state",
     "src/utils"
   ],
-  "out": "docs/api", // Output directory
+  "out": "docs/docs", // Output directory
   "plugin": ["typedoc-plugin-markdown"], // Use the markdown plugin
   "tsconfig": "tsconfig.json", // Use this tsconfig file
   "excludeExternals": true,

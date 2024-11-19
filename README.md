@@ -33,6 +33,8 @@ yarn add @zl-asica/react
 
 ## Usage
 
+For more examples, check the [documentation](https://react.zla.app).
+
 ### Example: `useToggle`
 
 ```tsx
@@ -44,8 +46,6 @@ const App = () => {
   return <button onClick={toggle}>{isToggled ? 'ON' : 'OFF'}</button>;
 };
 ```
-
-For more examples, check the [documentation](./docs/README.md).
 
 ## Limitations
 

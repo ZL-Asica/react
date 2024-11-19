@@ -14,8 +14,8 @@ hero:
       text: ✨ Get Started
       link: /guide
     - theme: alt
-      text: 📚 API Documentation
-      link: /api/
+      text: 📚 Documentation
+      link: /docs/
 
 features:
   - title: 🚀 Lightweight
