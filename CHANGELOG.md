@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.3.0
+
+### Minor Changes
+
+- Support NextJS Client side components
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,11 +1,18 @@
 import { defineConfig } from 'tsup';
+import { preserveDirectivesPlugin } from 'esbuild-plugin-preserve-directives';
 
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm'],
   dts: true,
   clean: true,
-  treeshake: true,
+  treeshake: false,
   minify: false,
-  external: ['react'],
+  esbuildPlugins: [
+    preserveDirectivesPlugin({
+      directives: ['use client', 'use strict'],
+      include: /hooks/,
+      exclude: /utils/,
+    }),
+  ],
 });
