@@ -26,16 +26,22 @@ jobs:
           node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org' # Default to npm registry
 
-      # Step 3: Install dependencies
+      # Step 3.1: Install dependencies
       - name: 🛠️ Install dependencies
         run: npm install --legacy-peer-deps
+
+      # Step 3.2: Set up Node.js and pnpm
+      - name: 📦 Set up Node.js and pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: true
 
       # Step 4: Lint, format, and test
       - name: 🎨 Lint, format, and test
         run: |
-          npm run lint:fix
-          npm run format
-          npm run test:fast
+          pnpm run lint:fix
+          pnpm run format
+          pnpm run test:fast
           npm run build
 
       # Step 5: Publish to NPM
