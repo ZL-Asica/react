@@ -26,27 +26,31 @@ function fixMarkdown(filePath) {
   const newContent = lines.slice(6);
   const newLines = [];
 
-  let skipCurrentLine = false;
+  let skipProcessing = false;
 
   for (let line of newContent) {
-    if (line.startsWith('## Index') || line.startsWith('### Functions')) {
-      skipCurrentLine = true;
-    } else if (line.startsWith('## Modules')) {
-      line = line.replace('## Modules', '# Documentation');
-      skipCurrentLine = false;
-    } else if (line.startsWith('# Function:')) {
-      line = line.replace('# Function:', '#');
-      skipCurrentLine = false;
-    } else {
-      skipCurrentLine = false;
+    if (skipProcessing) {
+      newLines.push(line);
+      continue;
     }
 
-    if (!skipCurrentLine) {
-      line = line
-        .replaceAll(/README.md/g, '')
-        .replaceAll(/<([A-Za-z]+)>/g, '&lt;$1&gt;');
+    if (line.startsWith('## Index') || line.startsWith('### Functions')) {
+      continue;
+    } else if (line.startsWith('## Modules')) {
+      line = line.replace('## Modules', '# Documentation');
+    } else if (line.startsWith('# Function:')) {
+      line = line.replace('# Function:', '#');
+    } else if (line.startsWith('## Example')) {
+      skipProcessing = true;
       newLines.push(line);
+      continue;
     }
+
+    line = line
+      .replaceAll(/README.md/g, '')
+      .replaceAll(/<([A-Za-z]+)>/g, '&lt;$1&gt;');
+
+    newLines.push(line);
   }
 
   const fixedContent = newLines.join('\n');
