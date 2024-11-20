@@ -8,7 +8,7 @@ import { useEventListener } from './useEventListener';
  * A custom React hook that detects clicks outside the specified target element.
  * Automatically triggers the provided handler when a click occurs outside the element.
  *
- * @param {RefObject<HTMLElement>} reference - A React ref object pointing to the target element.
+ * @param {RefObject<HTMLElement | null>} reference - The reference to the target element.
  * @param {() => void} handler - The callback function to execute when a click is detected outside the element.
  *
  * @example
@@ -37,7 +37,7 @@ import { useEventListener } from './useEventListener';
  */
 
 export const useClickOutside = (
-  reference: RefObject<HTMLElement>,
+  reference: RefObject<HTMLElement | null>,
   handler: () => void
 ): void => {
   const listener = (event: MouseEvent | TouchEvent) => {

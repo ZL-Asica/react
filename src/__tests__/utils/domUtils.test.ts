@@ -187,19 +187,113 @@ describe('pasteFromClipboard', () => {
 });
 
 describe('backToTop', () => {
-  it('should scroll to the top of the page', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('should scroll to the top of the page with default options', () => {
     const scrollTo = vi.fn();
     Object.defineProperty(globalThis, 'scrollTo', { value: scrollTo });
 
-    backToTop();
+    const handler = backToTop();
+    handler(); // Simulate calling the returned function
+
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
   });
 
-  it('should scroll to the top of the page with custom options', () => {
+  it('should scroll to a custom position with custom options', () => {
     const scrollTo = vi.fn();
     Object.defineProperty(globalThis, 'scrollTo', { value: scrollTo });
 
-    backToTop(100, 'auto');
+    const handler = backToTop(100, 'auto');
+    handler(); // Simulate calling the returned function
+
     expect(scrollTo).toHaveBeenCalledWith({ top: 100, behavior: 'auto' });
+  });
+
+  it('should execute the callback after scrolling with "auto" behavior', () => {
+    const scrollTo = vi.fn();
+    const callback = vi.fn();
+    Object.defineProperty(globalThis, 'scrollTo', { value: scrollTo });
+
+    const handler = backToTop(0, 'auto', callback);
+    handler();
+
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
+    expect(callback).toHaveBeenCalled();
+  });
+
+  it('should execute the callback after smooth scrolling is complete', () => {
+    const scrollTo = vi.fn();
+    const callback = vi.fn();
+    Object.defineProperty(globalThis, 'scrollTo', { value: scrollTo });
+    Object.defineProperty(globalThis, 'scrollY', { value: 0, writable: true });
+
+    const handler = backToTop(0, 'smooth', callback);
+    handler();
+
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+
+    vi.advanceTimersByTime(16);
+    expect(callback).toHaveBeenCalled();
+  });
+
+  it('should prevent default behavior when called as an event handler', () => {
+    const scrollTo = vi.fn();
+    const preventDefault = vi.fn();
+    Object.defineProperty(globalThis, 'scrollTo', { value: scrollTo });
+
+    const handler = backToTop();
+    handler({ preventDefault } as unknown as MouseEvent);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+  });
+
+  it('should not throw errors when called without a callback', () => {
+    const scrollTo = vi.fn();
+    Object.defineProperty(globalThis, 'scrollTo', { value: scrollTo });
+
+    const handler = backToTop(200, 'smooth');
+    expect(() => handler()).not.toThrow();
+
+    expect(scrollTo).toHaveBeenCalledWith({ top: 200, behavior: 'smooth' });
+  });
+
+  it('should invoke requestAnimationFrame until scroll position reaches the target', () => {
+    const scrollTo = vi.fn();
+    const callback = vi.fn();
+    const requestAnimationFrameSpy = vi.spyOn(
+      globalThis,
+      'requestAnimationFrame'
+    );
+    const scrollYMock = vi.spyOn(globalThis, 'scrollY', 'get');
+
+    Object.defineProperty(globalThis, 'scrollTo', { value: scrollTo });
+
+    // Simulate current scroll position
+    let mockScrollY = 50; // Start at 50px scroll position
+    scrollYMock.mockImplementation(() => mockScrollY);
+
+    const handler = backToTop(0, 'smooth', callback);
+    handler();
+
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    expect(requestAnimationFrameSpy).toHaveBeenCalled();
+
+    // Simulate scrolling towards target
+    mockScrollY = 25; // Scroll closer to target
+    vi.advanceTimersByTime(16); // Simulate a frame
+    expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(2); // Called again
+
+    // Simulate reaching the target
+    mockScrollY = 0; // Target position reached
+    vi.advanceTimersByTime(16); // Simulate another frame
+    expect(callback).toHaveBeenCalled();
   });
 });

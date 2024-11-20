@@ -1,5 +1,15 @@
 # @zl-asica/react
 
+## 0.2.0
+
+### Minor Changes
+
+- First Version ready for Production
+
+  - **Build & Packaging**: Fixed the incomplete build process, ensuring all exports and types are properly included.
+  - **Production Readiness**: This is the first usable version of `@zl-asica/react`.
+  - Ready for use in modern React (support 19RC) and Next.js (support 15) projects.
+
 ## 0.1.6
 
 ### Patch Changes
