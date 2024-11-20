@@ -1,3 +1,5 @@
+'use client';
+
 import type { MouseEvent as ReactMouseEvent } from 'react';
 /**
  * Retrieves the current scroll position of the window.

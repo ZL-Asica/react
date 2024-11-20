@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 import { useEventListener } from './useEventListener'; // 假设它在同目录下

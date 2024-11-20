@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.2.2
+
+### Patch Changes
+
+- Try to support for nextjs
+
 ## 0.2.1
 
 ### Patch Changes

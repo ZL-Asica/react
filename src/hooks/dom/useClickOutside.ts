@@ -1,3 +1,5 @@
+'use client';
+
 import type { RefObject } from 'react';
 
 import { useEventListener } from './useEventListener';
@@ -51,6 +53,6 @@ export const useClickOutside = (
   };
 
   // Use our custom event listener hook with generic type
-  useEventListener<MouseEvent>('mousedown', listener, document);
-  useEventListener<TouchEvent>('touchstart', listener, document);
+  useEventListener('mousedown', listener);
+  useEventListener('touchstart', listener);
 };
