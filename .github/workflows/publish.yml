@@ -25,7 +25,6 @@ jobs:
         with:
           node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org' # Default to npm registry
-          cache: 'npm'
 
       # Step 3: Install dependencies
       - name: 🛠️ Install dependencies
