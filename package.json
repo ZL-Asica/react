@@ -1,6 +1,6 @@
 {
   "name": "@zl-asica/react",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A library of reusable React hooks, components, and utilities built by ZL Asica.",
   "keywords": [
     "react",
@@ -53,7 +53,7 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "react": "^17.0.0"
+    "react": ">=16.8 <20"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
@@ -94,5 +94,5 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "packageManager": "pnpm@9.13.2"
+  "packageManager": "pnpm@9.14.1"
 }

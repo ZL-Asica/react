@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.1.6
+
+### Patch Changes
+
+- Fix React peerDependencies issue
+
 ## 0.1.5
 
 ### Patch Changes
