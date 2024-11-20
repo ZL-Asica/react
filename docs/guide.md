@@ -4,18 +4,18 @@ Welcome to the **React Hooks and Utils by ZL Asica**! This guide will help you i
 
 ## Installation
 
-To get started, install the package via `pnpm`, `npm`, or `yarn`:
+To get started, install the package via `npm`, `yarn`, `pnpm`, or `bun`:
 
 ```bash
-# With pnpm
-pnpm add @zl-asica/react
 # With npm
 npm install @zl-asica/react
 # With yarn
 yarn add @zl-asica/react
+# With pnpm
+pnpm add @zl-asica/react
+# With bun
+bun add @zl-asica/react
 ```
-
----
 
 ## Usage
 
@@ -85,4 +85,4 @@ export default LocalStorageExample;
 
 ## Explore More
 
-Check out the [API Documentation](/api/) to learn more about available hooks and utilities.
+Check out the [Docs](/docs/) to learn more about available hooks and utilities.

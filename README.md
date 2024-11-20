@@ -21,15 +21,17 @@ This repository is **NOT** a reimplementation of React itself. It is a collectio
 
 ## Installation
 
-Install the package via `pnpm`, `npm`, or `yarn`:
+Install the package via `npm`, `yarn`, `pnpm`, or `bun`:
 
 ```bash
-# With pnpm
-pnpm add @zl-asica/react
 # With npm
 npm install @zl-asica/react
 # With yarn
 yarn add @zl-asica/react
+# With pnpm
+pnpm add @zl-asica/react
+# With bun
+bun add @zl-asica/react
 ```
 
 ## Usage
@@ -54,7 +56,7 @@ ESM only. This package is built with ESM and is not compatible with CommonJS. If
 
 ## Contributing
 
-Contributions are welcome! Feel free to open an issue or submit a PR or open an issue. ❤️
+Contributions are welcome! Feel free to open an issue or submit a PR. ❤️
 
 ## License
 

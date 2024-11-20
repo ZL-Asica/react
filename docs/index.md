@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: '@zl-asica/react'
-  text: '🌸 A collection of reusable React hooks and utilities'
+  text: 'A collection of reusable React hooks and utilities'
   tagline: 'Effortlessly enhance your React projects with custom hooks and utilities 💖'
   image:
     src: /logo.png

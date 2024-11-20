@@ -14,9 +14,16 @@ describe('useEventListener', () => {
       useEventListener('click', handler, element)
     );
 
-    expect(addSpy).toHaveBeenCalledWith('click', handler);
+    // Trigger the event to verify the handler is called
+    const clickEvent = new MouseEvent('click');
+    element.dispatchEvent(clickEvent);
+
+    expect(handler).toHaveBeenCalledWith(clickEvent);
+    expect(addSpy).toHaveBeenCalledWith('click', expect.any(Function));
+
     unmount();
-    expect(removeSpy).toHaveBeenCalledWith('click', handler);
+
+    expect(removeSpy).toHaveBeenCalledWith('click', expect.any(Function));
   });
 
   it('should handle null element gracefully', () => {

@@ -127,8 +127,9 @@ describe('copyToClipboard', () => {
       clipboard: { writeText },
     });
 
-    await copyToClipboard(text);
+    const copied = await copyToClipboard(text);
     expect(writeText).toHaveBeenCalledWith(text);
+    expect(copied).toBe(true);
   });
 
   it('should handle errors when copying to the clipboard', async () => {
@@ -139,16 +140,23 @@ describe('copyToClipboard', () => {
       clipboard: { writeText },
     });
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-    await copyToClipboard(text);
+    const copied = await copyToClipboard(text);
     expect(writeText).toHaveBeenCalledWith(text);
-    expect(consoleSpy).toHaveBeenCalledWith(
-      'Failed to copy:',
-      expect.any(Error)
-    );
+    expect(copied).toBe(false);
+  });
 
-    consoleSpy.mockRestore();
+  it('should run a callback after copying to the clipboard', async () => {
+    const text = 'Hello, World!';
+    const writeText = vi.fn().mockResolvedValue(null);
+    const callback = vi.fn();
+
+    Object.assign(navigator, {
+      clipboard: { writeText },
+    });
+
+    await copyToClipboard(text, callback);
+    expect(writeText).toHaveBeenCalledWith(text);
+    expect(callback).toHaveBeenCalled();
   });
 });
 
@@ -172,17 +180,9 @@ describe('pasteFromClipboard', () => {
       clipboard: { readText },
     });
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
     const text = await pasteFromClipboard();
     expect(readText).toHaveBeenCalled();
     expect(text).toBe('');
-    expect(consoleSpy).toHaveBeenCalledWith(
-      'Failed to paste:',
-      expect.any(Error)
-    );
-
-    consoleSpy.mockRestore();
   });
 });
 

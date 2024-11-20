@@ -9,3 +9,4 @@ export { useLocalStorage } from './useLocalStorage';
 export { useArray } from './useArray';
 export { useCounter } from './useCounter';
 export { useDebounce } from './useDebounce';
+export { useDebouncedCallback } from './useDebouncedCallback';

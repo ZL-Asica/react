@@ -1,34 +1,87 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Fetch data from an API
- * @param url - API endpoint
- * @returns data, error, loading
+ * useFetch
+ *
+ * A custom React hook to fetch data from an API and manage its state.
+ * Automatically handles loading, error, and result states.
+ * Supports cancellation of the fetch operation on component unmount.
+ *
+ * @template T - The type of the data to fetch.
+ * @param {string} url - The API endpoint to fetch data from.
+ * @returns {{
+ *   data: T | null;
+ *   error: Error | null;
+ *   loading: boolean;
+ * }} An object containing:
+ *   - `data`: The fetched data or null if not available.
+ *   - `error`: An error object if the fetch operation fails.
+ *   - `loading`: A boolean indicating whether the fetch operation is in progress.
+ *
+ * @example
+ * ```tsx
+ * import { useFetch } from '@zl-asica/react';
+ *
+ * const MyComponent = () => {
+ *   const { data, error, loading } = useFetch<{ message: string }>(
+ *     'https://api.example.com/endpoint'
+ *   );
+ *
+ *   if (loading) return <p>Loading...</p>;
+ *   if (error) return <p>Error: {error.message}</p>;
+ *
+ *   return <p>Data: {data?.message}</p>;
+ * };
+ * ```
  */
-export const useFetch = <T>(url: string) => {
+export const useFetch = <T>(
+  url: string
+): {
+  data: T | null;
+  error: Error | null;
+  loading: boolean;
+} => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const fetchData = async () => {
       setLoading(true);
+      setError(null);
+
       try {
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(response.statusText || 'Fetch failed');
         }
         const result: T = await response.json();
-        setData(result);
-      } catch (error_) {
-        setError(error_ instanceof Error ? error_ : new Error('Unknown error'));
-        setData(null);
+        if (!isCancelled) {
+          setData(result);
+        }
+      } catch (fetchError) {
+        if (!isCancelled) {
+          setError(
+            fetchError instanceof Error
+              ? fetchError
+              : new Error('Unknown error')
+          );
+          setData(null);
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [url]);
 
   return { data, error, loading };

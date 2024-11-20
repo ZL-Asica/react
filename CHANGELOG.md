@@ -1,5 +1,21 @@
 # @zl-asica/react
 
+## 0.1.5
+
+### Patch Changes
+
+- Update JSDoc, add new functions.
+
+  - Hooks:
+    - useInViewport: Hook to check if an element is in the viewport (could provide a offset).
+    - useIsBottom: Hook to check if an element is at the bottom of the viewport (could provide a offset).
+    - useIsTop: Hook to check if an element is at the top of the viewport (could provide a offset).
+    - useKeyPress: Hook to listen to key presses.
+    - useScrollProgress: Hook to get the scroll progress of current window (from 0 to 100).
+    - useDebouncedCallback: Hook to create a debounced callback.
+  - Utils:
+    - mathUtils, dateUtils, stringUtils, objectUtils: add new functions.
+
 ## 0.1.4
 
 ### Patch Changes
