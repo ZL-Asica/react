@@ -145,7 +145,7 @@ describe('copyToClipboard', () => {
     expect(copied).toBe(false);
   });
 
-  it('should run a callback after copying to the clipboard', async () => {
+  it('should run a callback immediately after copying', async () => {
     const text = 'Hello, World!';
     const writeText = vi.fn().mockResolvedValue(null);
     const callback = vi.fn();
@@ -156,7 +156,42 @@ describe('copyToClipboard', () => {
 
     await copyToClipboard(text, callback);
     expect(writeText).toHaveBeenCalledWith(text);
-    expect(callback).toHaveBeenCalled();
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  it('should run a callback immediately and again after a timeout', async () => {
+    const text = 'Hello, World!';
+    const writeText = vi.fn().mockResolvedValue(null);
+    const callback = vi.fn();
+
+    Object.assign(navigator, {
+      clipboard: { writeText },
+    });
+
+    vi.useFakeTimers();
+
+    await copyToClipboard(text, callback, 2000);
+    expect(writeText).toHaveBeenCalledWith(text);
+    expect(callback).toHaveBeenCalledTimes(1);
+
+    // Advance time and check the callback is called again
+    vi.advanceTimersByTime(2000);
+    expect(callback).toHaveBeenCalledTimes(2);
+
+    vi.useRealTimers();
+  });
+
+  it('should not run a callback if it is not a function', async () => {
+    const text = 'Hello, World!';
+    const writeText = vi.fn().mockResolvedValue(null);
+
+    Object.assign(navigator, {
+      clipboard: { writeText },
+    });
+
+    // eslint-disable-next-line
+    await copyToClipboard(text, undefined);
+    expect(writeText).toHaveBeenCalledWith(text);
   });
 });
 
@@ -249,7 +284,7 @@ describe('backToTop', () => {
     Object.defineProperty(globalThis, 'scrollTo', { value: scrollTo });
 
     const handler = backToTop();
-    handler({ preventDefault } as unknown as MouseEvent);
+    handler({ preventDefault } as unknown as React.MouseEvent);
 
     expect(preventDefault).toHaveBeenCalled();
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });

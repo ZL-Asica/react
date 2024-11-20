@@ -1,3 +1,4 @@
+import type { MouseEvent as ReactMouseEvent } from 'react';
 /**
  * Retrieves the current scroll position of the window.
  *
@@ -32,10 +33,12 @@ export const getScrollPosition = (): { x: number; y: number } => {
  * Copies the given text to the clipboard.
  *
  * This function uses the Clipboard API to copy the specified text to the clipboard.
- * It supports an optional callback function that is executed after the text is copied.
+ * It supports an optional callback function that is executed immediately after the text is copied,
+ * and optionally executed again after a specified timeout.
  *
  * @param {string} text - The text to copy to the clipboard.
  * @param {() => void} [callback] - An optional callback to run after the text is copied.
+ * @param {number} [timeout] - Optional timeout in milliseconds to trigger the callback again after the delay.
  * @returns {Promise<boolean>} A promise that resolves to `true` if the copy was successful, or `false` otherwise.
  *
  * @example
@@ -49,14 +52,27 @@ export const getScrollPosition = (): { x: number; y: number } => {
  * const success = await copyToClipboard('Hello, world!');
  * console.log(success ? 'Copied!' : 'Failed to copy!');
  * ```
+ * @example
+ * ```tsx
+ * copyToClipboard('Hello, world!', () => {
+ *   console.log('Callback triggered!');
+ * }, 2000);
+ * // Immediately logs "Callback triggered!" and logs it again after 2 seconds.
+ * ```
  */
 export const copyToClipboard = async (
   text: string,
-  callback?: () => void
+  callback?: () => void,
+  timeout?: number
 ): Promise<boolean> => {
   try {
     await navigator.clipboard.writeText(text);
-    if (callback) callback();
+    if (callback && typeof callback === 'function') {
+      callback();
+      if (timeout) {
+        setTimeout(callback, timeout);
+      }
+    }
     return true;
   } catch {
     return false;
@@ -115,8 +131,8 @@ export const backToTop = (
   top: number = 0,
   behavior: 'auto' | 'smooth' = 'smooth',
   callback?: () => void
-): ((event?: MouseEvent) => void) => {
-  return (event?: MouseEvent) => {
+): ((event?: ReactMouseEvent) => void) => {
+  return (event?: ReactMouseEvent) => {
     // Prevent default action if used in an event handler
     if (event) {
       event.preventDefault();

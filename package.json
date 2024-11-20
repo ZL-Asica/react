@@ -1,11 +1,16 @@
 {
   "name": "@zl-asica/react",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A library of reusable React hooks, components, and utilities built by ZL Asica.",
   "keywords": [
     "react",
     "hooks",
-    "library"
+    "library",
+    "utilities",
+    "reusable",
+    "zl-asica",
+    "zla",
+    "ZL Asica"
   ],
   "author": {
     "name": "ZL Asica",
@@ -19,8 +24,7 @@
   "bugs": "https://github.com/ZL-Asica/react/issues",
   "homepage": "https://react.zla.app",
   "funding": "https://github.com/sponsors/ZL-Asica",
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -84,8 +88,8 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "**/*": [
-      "prettier --write ."
+    "**/*.{js,mjs,json,css,md}": [
+      "prettier --write"
     ]
   },
   "publishConfig": {

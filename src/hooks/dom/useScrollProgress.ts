@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 
-import { useEventListener } from './useEventListener'; // 复用现有的事件监听 Hook
+import { useEventListener } from './useEventListener';
+
+import { clamp } from '@/utils';
 
 /**
  * useScrollProgress
  *
  * A custom React hook to track the current vertical scroll progress of the page.
  * Returns a percentage (0 to 100) representing how much of the page has been scrolled.
+ * If the page has no scrollable area, the progress will be 0.
  *
  * @returns {number} The current scroll progress as a percentage (0-100).
  *
@@ -34,16 +37,20 @@ export const useScrollProgress = (): number => {
     const scrollableHeight = scrollHeight - clientHeight;
 
     if (scrollableHeight === 0) {
-      setProgress(100); // If no scrollable area, consider it fully scrolled
+      setProgress(0); // If no scrollable area, set progress to 0
       return;
     }
 
-    const currentProgress = (scrollTop / scrollableHeight) * 100;
-    setProgress(Math.min(100, Math.max(0, currentProgress))); // Clamp to [0, 100]
+    setProgress(clamp((scrollTop / scrollableHeight) * 100, 0, 100));
   };
 
-  useEventListener('scroll', calculateScrollProgress, globalThis);
-  useEffect(calculateScrollProgress, []); // Initialize progress on mount
+  useEffect(() => {
+    if (typeof globalThis !== 'undefined') {
+      calculateScrollProgress();
+    }
+  }, []);
+
+  useEventListener('scroll', calculateScrollProgress);
 
   return progress;
 };

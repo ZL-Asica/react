@@ -59,6 +59,6 @@ describe('useScrollProgress', () => {
 
     const { result } = renderHook(() => useScrollProgress());
 
-    expect(result.current).toBe(100); // No scrollable area, progress is 100%
+    expect(result.current).toBe(0); // No scrollable area, progress should be 0
   });
 });

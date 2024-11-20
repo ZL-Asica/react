@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useEventListener } from './useEventListener';
 
@@ -36,8 +36,15 @@ export const useIsTop = (offset: number = 0): boolean => {
     setIsTop(isAtTop);
   };
 
-  useEventListener('scroll', checkTop, globalThis);
-  useEventListener('resize', checkTop, globalThis); // Recheck on resize
+  // Initialize state on component mount
+  useEffect(() => {
+    if (typeof globalThis !== 'undefined') {
+      checkTop();
+    }
+  }, []); // Empty dependency array ensures it only runs on mount
+
+  useEventListener('scroll', checkTop);
+  useEventListener('resize', checkTop);
 
   return isTop;
 };

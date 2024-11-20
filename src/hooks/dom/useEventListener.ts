@@ -32,7 +32,7 @@ import { useEffect } from 'react';
 export const useEventListener = <T extends Event>(
   event: string,
   handler: (event: T) => void,
-  element?: EventTarget | null
+  element: EventTarget | null | undefined = globalThis
 ): void => {
   useEffect(() => {
     if (!element) return;

@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.2.1
+
+### Patch Changes
+
+- add timeout to copy util.
+
 ## 0.2.0
 
 ### Minor Changes

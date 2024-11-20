@@ -52,4 +52,11 @@ describe('useIsTop', () => {
 
     expect(result.current).toBe(true);
   });
+
+  it('should initialize isTop state on mount', () => {
+    Object.defineProperty(document.documentElement, 'scrollTop', { value: 0 });
+
+    const { result } = renderHook(() => useIsTop());
+    expect(result.current).toBe(true);
+  });
 });
