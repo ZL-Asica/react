@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.3.3
+
+### Patch Changes
+
+- Update jsr config
+
 ## 0.3.2
 
 ### Patch Changes

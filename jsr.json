@@ -1,6 +1,6 @@
 {
   "name": "@zl-asica/react",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "license": "MIT",
   "exports": "./src/index.ts",
   "importMap": "./import_map.json",
@@ -32,5 +32,8 @@
   },
   "bugs": "https://github.com/ZL-Asica/react/issues",
   "homepage": "https://react.zla.app",
-  "funding": "https://github.com/sponsors/ZL-Asica"
+  "funding": "https://github.com/sponsors/ZL-Asica",
+  "publishConfig": {
+    "access": "public"
+  }
 }
