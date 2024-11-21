@@ -45,8 +45,10 @@ export const useDebouncedCallback = <TArguments extends unknown[]>(
   const callbackReference = useRef(callback);
   const timeoutReference = useRef<NodeJS.Timeout | null>(null);
 
-  // Always update the ref to the latest callback
-  callbackReference.current = callback;
+  useEffect(() => {
+    // Always update the ref to the latest callback
+    callbackReference.current = callback;
+  }, [callback]);
 
   const debouncedCallback = useCallback(
     (...arguments_: TArguments) => {

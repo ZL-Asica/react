@@ -52,7 +52,6 @@ import { useDebouncedCallback } from '@/hooks/state';
  * };
  * ```
  */
-
 export const useEventListener = <T extends Event>(
   event: string,
   handler: (event: T) => void,
@@ -68,10 +67,10 @@ export const useEventListener = <T extends Event>(
   }, [handler, debounce]);
 
   useEffect(() => {
-    if (!element || !debouncedCallbackReference.current) return;
+    if (!element) return;
 
     const eventHandler = (event_: Event) =>
-      debouncedCallbackReference.current!(event_ as T); // Type cast to match generic event type
+      debouncedCallbackReference.current?.(event_ as T); // Safe access with optional chaining
     element.addEventListener(event, eventHandler);
 
     return () => {

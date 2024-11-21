@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.3.4
+
+### Patch Changes
+
+- Minor bugs fixed for debounce and eventlistener
+
 ## 0.3.3
 
 ### Patch Changes
