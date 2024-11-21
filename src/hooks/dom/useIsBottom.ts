@@ -2,17 +2,23 @@
 
 import { useEffect, useState } from 'react';
 
+import { useEventListener } from './useEventListener';
+
 /**
  * useIsBottom
  *
- * A custom React hook to track whether the page or a specific element is scrolled to the bottom.
+ * A custom React hook to track whether a specific element (or the page) is scrolled to the bottom.
+ * It supports global targets (e.g., `window` or `document.documentElement`) and specific `HTMLElement`s.
  *
- * @param {number} [offset=0] - The offset in pixels to consider as "bottom".
- * @returns {boolean} `isBottom` - Whether the page or element is currently scrolled to the bottom.
+ * @param {number} [offset=0] - The offset in pixels to consider as "bottom". If the scroll position is within this offset, it is considered at the bottom.
+ * @param {EventTarget | null | undefined} [element=globalThis] - The target element to observe scroll position. Defaults to `globalThis` (commonly `window`).
+ * @param {number} [debounce=0] - The debounce delay in milliseconds for scroll and resize events. Defaults to `0` (no debounce).
+ * @param {boolean} [initialValue=false] - The initial value for `isBottom`. Defaults to `false`.
+ * @returns {boolean} `isBottom` - Whether the target element is currently scrolled to the bottom.
  *
  * @example
+ * Example: Observing the scroll position of the page
  * ```tsx
- * import React from 'react';
  * import { useIsBottom } from '@zl-asica/react';
  *
  * const MyComponent = () => {
@@ -20,34 +26,77 @@ import { useEffect, useState } from 'react';
  *
  *   return (
  *     <div>
- *       <p>{isBottom ? "You're at the bottom!" : "Keep scrolling!"}</p>
+ *       <p>{isBottom ? "You're at the bottom!" : "Scroll down!"}</p>
  *       <div style={{ height: '200vh', background: 'linear-gradient(to bottom, red, blue)' }} />
  *     </div>
  *   );
  * };
  * ```
+ *
+ * @example
+ * Example: Observing the scroll position of a specific container
+ * ```tsx
+ * import { useRef } from 'react';
+ * import { useIsBottom } from '@zl-asica/react';
+ *
+ * const MyComponent = () => {
+ *   const containerRef = useRef<HTMLDivElement | null>(null);
+ *   const isBottom = useIsBottom(50, containerRef.current); // Observe a specific container
+ *
+ *   return (
+ *     <div>
+ *       <p>{isBottom ? "Container is at the bottom!" : "Scroll more!"}</p>
+ *       <div
+ *         ref={containerRef}
+ *         style={{
+ *           height: '200px',
+ *           overflowY: 'scroll',
+ *           background: 'lightgray',
+ *         }}
+ *       >
+ *         <div style={{ height: '500px' }}>Scrollable content</div>
+ *       </div>
+ *     </div>
+ *   );
+ * };
+ * ```
  */
-export const useIsBottom = (offset: number = 0): boolean => {
-  const [isBottom, setIsBottom] = useState(false);
+export const useIsBottom = (
+  offset: number = 0,
+  element: HTMLElement | null | undefined = undefined,
+  debounce: number = 0,
+  initialValue: boolean = false
+): boolean => {
+  const [isBottom, setIsBottom] = useState(initialValue);
 
   const checkBottom = () => {
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    const target = element ?? document.documentElement;
+
+    // Handle cases where `scrollTop`, `scrollHeight`, or `clientHeight` may not exist
+    const scrollTop = target.scrollTop || 0;
+    const scrollHeight = target.scrollHeight || 0;
+    const clientHeight = target.clientHeight || 0;
+
+    // Explicitly handle case where scrollHeight is 0 or undefined
+    if (scrollHeight === 0) {
+      setIsBottom(false);
+      return;
+    }
+
     const isAtBottom = scrollTop + clientHeight >= scrollHeight - offset;
     setIsBottom(isAtBottom);
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', checkBottom);
-    window.addEventListener('resize', checkBottom);
-
     // Initial check
-    checkBottom();
+    if (typeof globalThis !== 'undefined') {
+      checkBottom();
+    }
+  }, [element, offset]);
 
-    return () => {
-      window.removeEventListener('scroll', checkBottom);
-      window.removeEventListener('resize', checkBottom);
-    };
-  }, [offset]);
+  // Attach scroll and resize listeners
+  useEventListener('scroll', checkBottom, element ?? globalThis, debounce);
+  useEventListener('resize', checkBottom, element ?? globalThis, debounce);
 
   return isBottom;
 };

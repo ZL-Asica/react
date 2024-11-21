@@ -7,13 +7,17 @@ import { useEventListener } from './useEventListener';
 /**
  * useClickOutside
  *
- * A custom React hook that detects clicks outside the specified target element.
- * Automatically triggers the provided handler when a click occurs outside the element.
+ * A custom React hook that detects clicks or touch events outside the specified target element.
+ * It is useful for closing dropdowns, modals, or menus when a user interacts outside the specified element.
+ * The handler function is called when the user clicks or touches outside the referenced element.
+ * Optionally, events can be debounced for better performance in rapid interaction scenarios.
  *
- * @param {RefObject<HTMLElement | null>} reference - The reference to the target element.
- * @param {() => void} handler - The callback function to execute when a click is detected outside the element.
+ * @param {RefObject<HTMLElement | null>} reference - The reference to the target element. The hook detects interactions outside this element.
+ * @param {() => void} handler - The callback function to execute when a click or touch is detected outside the element.
+ * @param {number} [debounce=0] - The debounce delay in milliseconds for the event listener. Defaults to `0` (no debounce).
  *
  * @example
+ * Example: Close a dropdown menu when clicking outside
  * ```tsx
  * import { useRef, useState } from 'react';
  * import { useClickOutside } from '@zl-asica/react';
@@ -36,11 +40,49 @@ import { useEventListener } from './useEventListener';
  *   );
  * };
  * ```
+ *
+ * @example
+ * Example: Close a modal when touching outside
+ * ```tsx
+ * import { useRef, useState } from 'react';
+ * import { useClickOutside } from '@zl-asica/react';
+ *
+ * const MyComponent = () => {
+ *   const [isModalOpen, setIsModalOpen] = useState(false);
+ *   const modalRef = useRef<HTMLDivElement>(null);
+ *
+ *   useClickOutside(modalRef, () => setIsModalOpen(false), 200); // Debounced by 200ms
+ *
+ *   return (
+ *     <>
+ *       <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
+ *       {isModalOpen && (
+ *         <div
+ *           ref={modalRef}
+ *           style={{
+ *             position: 'fixed',
+ *             top: '50%',
+ *             left: '50%',
+ *             transform: 'translate(-50%, -50%)',
+ *             padding: '20px',
+ *             background: 'white',
+ *             borderRadius: '10px',
+ *             boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+ *           }}
+ *         >
+ *           <p>This is a modal. Tap outside to close.</p>
+ *         </div>
+ *       )}
+ *     </>
+ *   );
+ * };
+ * ```
  */
 
 export const useClickOutside = (
   reference: RefObject<HTMLElement | null>,
-  handler: () => void
+  handler: () => void,
+  debounce: number = 0
 ): void => {
   const listener = (event: MouseEvent | TouchEvent) => {
     if (
@@ -53,6 +95,6 @@ export const useClickOutside = (
   };
 
   // Use our custom event listener hook with generic type
-  useEventListener('mousedown', listener);
-  useEventListener('touchstart', listener);
+  useEventListener('mousedown', listener, undefined, debounce);
+  useEventListener('touchstart', listener, undefined, debounce);
 };

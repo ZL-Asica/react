@@ -7,8 +7,7 @@ import { withSidebar } from 'vitepress-sidebar';
 const vitePressConfig = {
   lang: 'en-US',
   title: '@zl-asica/react',
-  description:
-    'A collection of reusable React hooks and utilities provided by ZL Asica.',
+  description: 'A collection of reusable React hooks and utilities.',
   head: [
     [
       'meta',

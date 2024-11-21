@@ -4,24 +4,30 @@ layout: home
 
 hero:
   name: '@zl-asica/react'
-  text: 'A collection of reusable React hooks and utilities'
-  tagline: 'Effortlessly enhance your React projects with custom hooks and utilities 💖'
+  text: 'Elevate your React development with reusable hooks and utilities'
+  tagline: 'Simplify your workflow with lightweight, powerful tools 🚀'
   image:
     src: /logo.png
     alt: '@zl-asica/react Logo'
   actions:
     - theme: brand
-      text: ✨ Get Started
+      text: 🛠️ Get Started
       link: /guide
     - theme: alt
-      text: 📚 Documentation
+      text: 📖 Full Documentation
       link: /docs/
+    - theme: alt
+      text: ⭐ GitHub
+      link: https://github.com/zl-asica/react
 
 features:
-  - title: 🚀 Lightweight
-    details: Super optimized hooks and utilities to keep your bundle size tiny. 🐾
-  - title: 📦 TypeScript Ready
-    details: Fully typed APIs for smooth, error-free coding! 🖋️
-  - title: 🔧 Reusable Utilities
-    details: Convenient tools for managing DOM, state, and async operations. 🛠️
+  - icon: 🚀
+    title: Performance-Driven
+    details: Designed to keep your applications fast and your bundle size small. No bloat, just results. 🏎️
+  - icon: 📦
+    title: TypeScript-First
+    details: Fully typed, so you can enjoy seamless integration and confident coding. 🔒
+  - icon: 🛠️
+    title: Versatile Utilities
+    details: Simplify DOM manipulation, state management, and async tasks with ease. 🎯
 ---

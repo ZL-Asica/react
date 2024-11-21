@@ -59,4 +59,55 @@ describe('useIsTop', () => {
     const { result } = renderHook(() => useIsTop());
     expect(result.current).toBe(true);
   });
+
+  it('should handle custom HTMLElement as target', () => {
+    const mockElement = document.createElement('div');
+    Object.defineProperty(mockElement, 'scrollTop', {
+      value: 60,
+      writable: true,
+    });
+
+    const { result } = renderHook(() => useIsTop(50, mockElement));
+
+    expect(result.current).toBe(false);
+
+    act(() => {
+      mockElement.scrollTop = 40; // Within 50px offset
+      mockElement.dispatchEvent(new Event('scroll'));
+    });
+
+    expect(result.current).toBe(true);
+  });
+
+  it('should default to globalThis when no element is provided', () => {
+    const { result } = renderHook(() => useIsTop(50));
+
+    act(() => {
+      document.documentElement.scrollTop = 40; // Within 50px offset
+      globalThis.dispatchEvent(new Event('scroll'));
+    });
+
+    expect(result.current).toBe(true);
+  });
+
+  it('should correctly handle HTMLElement with scrollTop', () => {
+    const mockElement = document.createElement('div');
+    Object.defineProperty(mockElement, 'scrollTop', {
+      value: 100,
+      writable: true,
+    });
+
+    const { result } = renderHook(() => useIsTop(50, mockElement));
+
+    // `scrollTop` is greater than `offset`, so it should return false
+    expect(result.current).toBe(false);
+
+    act(() => {
+      mockElement.scrollTop = 40;
+      mockElement.dispatchEvent(new Event('scroll'));
+    });
+
+    // `scrollTop` is now within the `offset`, so it should return true
+    expect(result.current).toBe(true);
+  });
 });

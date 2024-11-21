@@ -40,7 +40,7 @@ import { useState, useEffect } from 'react';
  * ```
  * @example
  * ```tsx
- * import React, { useCallback } from 'react';
+ * import { useCallback } from 'react';
  * import { useDebounce } from './useDebounce';
  *
  * const MyComponent = () => {

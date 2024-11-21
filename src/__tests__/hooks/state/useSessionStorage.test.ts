@@ -1,10 +1,10 @@
 import { renderHook, act } from '@testing-library/react';
 
-import { useLocalStorage } from '@/hooks/state';
+import { useSessionStorage } from '@/hooks/state';
 
-describe('useLocalStorage', () => {
+describe('useSessionStorage', () => {
   beforeEach(() => {
-    const localStorageMock = (() => {
+    const sessionStorageMock = (() => {
       let store: Record<string, string> = {};
       return {
         getItem: (key: string) => store[key] || null,
@@ -19,35 +19,35 @@ describe('useLocalStorage', () => {
         },
       };
     })();
-    Object.defineProperty(globalThis, 'localStorage', {
-      value: localStorageMock,
+    Object.defineProperty(globalThis, 'sessionStorage', {
+      value: sessionStorageMock,
       writable: true,
     });
   });
 
   it('should initialize with the default value when no data is stored', () => {
     const { result } = renderHook(() =>
-      useLocalStorage('test_key', 'default_value')
+      useSessionStorage('test_key', 'default_value')
     );
 
     expect(result.current.value).toBe('default_value');
     expect(result.current.error).toBeNull();
   });
 
-  it('should initialize with the stored value from localStorage', () => {
-    localStorage.setItem('test_key', JSON.stringify('stored_value'));
+  it('should initialize with the stored value from sessionStorage', () => {
+    sessionStorage.setItem('test_key', JSON.stringify('stored_value'));
 
     const { result } = renderHook(() =>
-      useLocalStorage('test_key', 'default_value')
+      useSessionStorage('test_key', 'default_value')
     );
 
     expect(result.current.value).toBe('stored_value');
     expect(result.current.error).toBeNull();
   });
 
-  it('should update the value in state and localStorage', () => {
+  it('should update the value in state and sessionStorage', () => {
     const { result } = renderHook(() =>
-      useLocalStorage('test_key', 'default_value')
+      useSessionStorage('test_key', 'default_value')
     );
 
     act(() => {
@@ -55,29 +55,29 @@ describe('useLocalStorage', () => {
     });
 
     expect(result.current.value).toBe('updated_value');
-    expect(localStorage.getItem('test_key')).toBe(
+    expect(sessionStorage.getItem('test_key')).toBe(
       JSON.stringify('updated_value')
     );
     expect(result.current.error).toBeNull();
   });
 
   it('should handle functional updates', () => {
-    const { result } = renderHook(() => useLocalStorage('counter', 0));
+    const { result } = renderHook(() => useSessionStorage('counter', 0));
 
     act(() => {
       result.current.setValue((currentValue) => currentValue + 1);
     });
 
     expect(result.current.value).toBe(1);
-    expect(localStorage.getItem('counter')).toBe(JSON.stringify(1));
+    expect(sessionStorage.getItem('counter')).toBe(JSON.stringify(1));
     expect(result.current.error).toBeNull();
   });
 
   it('should handle invalid JSON gracefully', () => {
-    localStorage.setItem('test_key', 'invalid_json');
+    sessionStorage.setItem('test_key', 'invalid_json');
 
     const { result } = renderHook(() =>
-      useLocalStorage('test_key', 'default_value')
+      useSessionStorage('test_key', 'default_value')
     );
 
     expect(result.current.value).toBe('default_value');
@@ -86,10 +86,10 @@ describe('useLocalStorage', () => {
 
   it('should handle errors during setValue gracefully', () => {
     const { result } = renderHook(() =>
-      useLocalStorage('test_key', 'default_value')
+      useSessionStorage('test_key', 'default_value')
     );
 
-    Object.defineProperty(globalThis.localStorage, 'setItem', {
+    Object.defineProperty(globalThis.sessionStorage, 'setItem', {
       value: () => {
         throw new Error('Storage failed');
       },
@@ -104,8 +104,8 @@ describe('useLocalStorage', () => {
   });
 
   it('should handle non-Error types during getStoredValue gracefully', () => {
-    // Mock localStorage.getItem to throw a non-Error type
-    Object.defineProperty(globalThis.localStorage, 'getItem', {
+    // Mock sessionStorage.getItem to throw a non-Error type
+    Object.defineProperty(globalThis.sessionStorage, 'getItem', {
       value: () => {
         throw 'Non-Error type';
       },
@@ -113,7 +113,7 @@ describe('useLocalStorage', () => {
     });
 
     const { result } = renderHook(() =>
-      useLocalStorage('test_key', 'default_value')
+      useSessionStorage('test_key', 'default_value')
     );
 
     expect(result.current.value).toBe('default_value'); // Default value is returned
@@ -123,11 +123,11 @@ describe('useLocalStorage', () => {
 
   it('should handle non-Error types during setValue gracefully', () => {
     const { result } = renderHook(() =>
-      useLocalStorage('test_key', 'default_value')
+      useSessionStorage('test_key', 'default_value')
     );
 
-    // Mock localStorage.setItem to throw a non-Error type
-    Object.defineProperty(globalThis.localStorage, 'setItem', {
+    // Mock sessionStorage.setItem to throw a non-Error type
+    Object.defineProperty(globalThis.sessionStorage, 'setItem', {
       value: () => {
         throw { unexpected: 'object' }; // Non-Error object type
       },

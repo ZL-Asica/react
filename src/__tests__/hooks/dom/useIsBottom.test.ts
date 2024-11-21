@@ -51,4 +51,79 @@ describe('useIsBottom', () => {
 
     expect(result.current).toBe(true);
   });
+
+  it('should handle target without scrollTop', () => {
+    const mockElement = document.createElement('div');
+    Object.defineProperty(mockElement, 'scrollTop', {
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      get: () => undefined, // Simulate no scrollTop
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'scrollHeight', {
+      get: () => 2000, // Provide a valid scrollHeight
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'clientHeight', {
+      get: () => 1000, // Provide a valid clientHeight
+      configurable: true,
+    });
+
+    const { result } = renderHook(() => useIsBottom(50, mockElement));
+
+    act(() => {
+      mockElement.dispatchEvent(new Event('scroll'));
+    });
+
+    expect(result.current).toBe(false); // Defaults to 0 for scrollTop
+  });
+
+  it('should handle target without scrollHeight', () => {
+    const mockElement = document.createElement('div');
+    Object.defineProperty(mockElement, 'scrollTop', {
+      get: () => 800, // Provide a valid scrollTop
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'scrollHeight', {
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      get: () => undefined, // Simulate no scrollHeight
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'clientHeight', {
+      get: () => 1000, // Provide a valid clientHeight
+      configurable: true,
+    });
+
+    const { result } = renderHook(() => useIsBottom(50, mockElement));
+
+    act(() => {
+      mockElement.dispatchEvent(new Event('scroll'));
+    });
+
+    expect(result.current).toBe(false); // Defaults to 0 for scrollHeight
+  });
+
+  it('should handle target without clientHeight', () => {
+    const mockElement = document.createElement('div');
+    Object.defineProperty(mockElement, 'scrollTop', {
+      get: () => 800, // Provide a valid scrollTop
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'scrollHeight', {
+      get: () => 2000, // Provide a valid scrollHeight
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'clientHeight', {
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      get: () => undefined, // Simulate no clientHeight
+      configurable: true,
+    });
+
+    const { result } = renderHook(() => useIsBottom(50, mockElement));
+
+    act(() => {
+      mockElement.dispatchEvent(new Event('scroll'));
+    });
+
+    expect(result.current).toBe(false); // Defaults to 0 for clientHeight
+  });
 });

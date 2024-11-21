@@ -23,7 +23,6 @@ import { useState, useCallback, useEffect } from 'react';
  *
  * @example
  * ```tsx
- * import React from 'react';
  * import { useAsync } from '@zl-asica/react';
  *
  * const fetchData = async () => {

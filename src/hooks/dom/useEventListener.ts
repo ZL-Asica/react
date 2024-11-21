@@ -1,18 +1,24 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+
+import { useDebouncedCallback } from '@/hooks/state';
 
 /**
  * useEventListener
  *
  * A custom React hook for attaching an event listener to a target element with automatic cleanup.
- * It ensures that the event listener is removed when the component unmounts or dependencies change.
+ * This hook is useful for adding event listeners to DOM elements or the global `globalThis`/`document` object.
+ * It also supports optional debouncing to limit how often the handler is invoked.
  *
  * @param {string} event - The name of the event to listen for (e.g., 'click', 'keydown').
- * @param {(event: T) => void} handler - The callback function that will handle the event. Receives the event object as a parameter.
- * @param {EventTarget | null | undefined} [element=window] - The target element to attach the event listener to. Defaults to `window` if not provided.
+ * @param {(event: T) => void} handler - The callback function to handle the event. Receives the event object as a parameter.
+ * @param {EventTarget | null | undefined} [element=globalThis] - The target element to attach the event listener to. Defaults to `globalThis` if not provided.
+ * @param {number} [debounce=0] - The debounce delay in milliseconds. Defaults to 0ms (no debounce).
  * @template T - The type of the event object.
+ *
  * @example
+ * Example: Adding a click event listener to a button with no debounce
  * ```tsx
  * import { useRef } from 'react';
  * import { useEventListener } from '@zl-asica/react';
@@ -29,20 +35,47 @@ import { useEffect } from 'react';
  *   return <button ref={buttonRef}>Click Me</button>;
  * };
  * ```
+ *
+ * @example
+ * Example: Adding a keydown listener to the document with debounce
+ * ```tsx
+ * import { useEventListener } from '@zl-asica/react';
+ *
+ * const MyComponent = () => {
+ *   const handleKeyDown = (event: KeyboardEvent) => {
+ *     console.log('Key pressed:', event.key);
+ *   };
+ *
+ *   useEventListener('keydown', handleKeyDown, document, 300); // Debounced by 300ms
+ *
+ *   return <div>Press any key!</div>;
+ * };
+ * ```
  */
 
 export const useEventListener = <T extends Event>(
   event: string,
   handler: (event: T) => void,
-  element: EventTarget | null | undefined = globalThis
+  element: EventTarget | null | undefined = globalThis,
+  debounce: number = 0
 ): void => {
-  useEffect(() => {
-    if (!element) return;
+  const debouncedCallbackReference = useRef<(event: T) => void>();
 
-    const eventHandler = (event_: Event) => handler(event_ as T); // Type cast to match generic event type
+  // Update the debounced callback when the handler or debounce delay changes
+  useEffect(() => {
+    debouncedCallbackReference.current =
+      debounce === 0 ? handler : useDebouncedCallback(handler, debounce);
+  }, [handler, debounce]);
+
+  useEffect(() => {
+    if (!element || !debouncedCallbackReference.current) return;
+
+    const eventHandler = (event_: Event) =>
+      debouncedCallbackReference.current!(event_ as T); // Type cast to match generic event type
     element.addEventListener(event, eventHandler);
+
     return () => {
       element.removeEventListener(event, eventHandler);
     };
-  }, [event, handler, element]);
+  }, [event, element]);
 };

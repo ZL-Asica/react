@@ -1,4 +1,4 @@
-# React Utilities (by ZL Asica) 🚀
+# React Utilities 🚀
 
 [![npm version][npm-version-badge]][npm-versions-link]
 [![License][license-badge]][license-link]

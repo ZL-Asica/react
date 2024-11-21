@@ -1,5 +1,16 @@
 # @zl-asica/react
 
+## 0.3.1
+
+### Patch Changes
+
+- Update all dom hooks with debounce and extend
+
+  - Update all dom hooks with debounce
+  - Extend dom hooks not only for window but also for document and element
+  - Merge `useScrollProgress` into `useScrollPosition`
+  - Add `useSessionStorage` and `useThread` state hook
+
 ## 0.3.0
 
 ### Minor Changes

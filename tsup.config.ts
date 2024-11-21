@@ -7,7 +7,7 @@ export default defineConfig({
   dts: true,
   clean: true,
   treeshake: false,
-  minify: false,
+  minify: true,
   esbuildPlugins: [
     preserveDirectivesPlugin({
       directives: ['use client', 'use strict'],

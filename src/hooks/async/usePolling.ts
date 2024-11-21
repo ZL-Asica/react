@@ -11,7 +11,7 @@ import { useEffect, useRef } from 'react';
  *
  * @example
  * ```tsx
- * import React, { useState } from 'react';
+ * import { useState } from 'react';
  * import { usePolling } from '@zl-asica/react';
  *
  * const PollingExample = () => {

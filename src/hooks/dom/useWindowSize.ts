@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useEventListener } from './useEventListener'; // 假设它在同目录下
+import { useEventListener } from './useEventListener';
 
 /**
  * useWindowSize
@@ -10,6 +10,7 @@ import { useEventListener } from './useEventListener'; // 假设它在同目录�
  * A custom React hook to track the current window size.
  * Automatically updates whenever the window is resized.
  *
+ * @param {number} [debounce=0] - The debounce delay in milliseconds for the resize event. Defaults to 0 (no debounce).
  * @returns {{ width: number; height: number }} An object containing the current window width and height.
  *
  * @example
@@ -27,21 +28,44 @@ import { useEventListener } from './useEventListener'; // 假设它在同目录�
  *   );
  * };
  * ```
+ *
+ * @example
+ * with debounce:
+ * ```tsx
+ * import { useWindowSize } from '@zl-asica/react';
+ *
+ * const MyComponent = () => {
+ *   const { width, height } = useWindowSize(300); // Update size with 300ms debounce
+ *
+ *   return (
+ *     <div>
+ *       <p>Width: {width}px</p>
+ *       <p>Height: {height}px</p>
+ *     </div>
+ *   );
+ * };
+ * ```
  */
-export const useWindowSize = (): { width: number; height: number } => {
+
+export const useWindowSize = (
+  debounce: number = 0
+): { width: number; height: number } => {
   const [size, setSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
 
-  // Use our custom event listener hook for the resize event
-  useEventListener(
-    'resize',
-    () => {
-      setSize({ width: window.innerWidth, height: window.innerHeight });
-    },
-    globalThis
-  );
+  const handleResize = () => {
+    setSize({ width: window.innerWidth, height: window.innerHeight });
+  };
+
+  useEffect(() => {
+    if (typeof globalThis !== 'undefined') {
+      handleResize(); // Initialize with current window size
+    }
+  }, []);
+
+  useEventListener('resize', handleResize, globalThis, debounce);
 
   return size;
 };
