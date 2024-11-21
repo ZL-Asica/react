@@ -4,7 +4,7 @@ Welcome to the **React Hooks and Utils by ZL Asica**! This guide will help you i
 
 ## Installation
 
-To get started, install the package via `npm`, `yarn`, `pnpm`, or `bun`:
+To get started, install the package via `npm`, `yarn`, `pnpm`, `bun`, or `deno` from JSR:
 
 ```bash
 # With npm
@@ -15,6 +15,11 @@ yarn add @zl-asica/react
 pnpm add @zl-asica/react
 # With bun
 bun add @zl-asica/react
+```
+
+```ts
+// With deno from JSR
+import { useLocalStorage } from 'jsr:@zl-asica/react@0.3.0';
 ```
 
 ## Usage

@@ -21,7 +21,7 @@ This repository is **NOT** a reimplementation of React itself. It is a collectio
 
 ## Installation
 
-Install the package via `npm`, `yarn`, `pnpm`, or `bun`:
+Install the package via `npm`, `yarn`, `pnpm`, `bun`, or `deno` from JSR:
 
 ```bash
 # With npm
@@ -32,6 +32,11 @@ yarn add @zl-asica/react
 pnpm add @zl-asica/react
 # With bun
 bun add @zl-asica/react
+```
+
+```ts
+// With deno from JSR
+import { useLocalStorage } from 'jsr:@zl-asica/react@0.3.0';
 ```
 
 ## Usage

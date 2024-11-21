@@ -40,7 +40,14 @@ import { useState } from 'react';
  * };
  * ```
  */
-export const useLocalStorage = <T>(key: string, initialValue: T) => {
+export const useLocalStorage = <T>(
+  key: string,
+  initialValue: T
+): {
+  value: T;
+  setValue: (value: T | ((currentValue: T) => T)) => void;
+  error: Error | null;
+} => {
   const getStoredValue = (key: string, defaultValue: T): [T, Error | null] => {
     try {
       const storedValue = globalThis.localStorage.getItem(key);

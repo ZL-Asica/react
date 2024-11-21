@@ -1,0 +1,34 @@
+{
+  "name": "@zl-asica/react",
+  "version": "0.3.1",
+  "license": "MIT",
+  "exports": "./src/index.ts",
+  "importMap": "./import_map.json",
+  "publish": {
+    "include": ["src/**/*.ts", "README.md", "LICENSE"],
+    "exclude": ["src/__tests__", "node_modules"]
+  },
+  "description": "A library of reusable React hooks, components, and utilities built by ZL Asica.",
+  "keywords": [
+    "react",
+    "hooks",
+    "library",
+    "utilities",
+    "reusable",
+    "zl-asica",
+    "zla",
+    "ZL Asica"
+  ],
+  "author": {
+    "name": "ZL Asica",
+    "email": "zl@zla.app",
+    "url": "https://github.com/ZL-Asica/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZL-Asica/react.git"
+  },
+  "bugs": "https://github.com/ZL-Asica/react/issues",
+  "homepage": "https://react.zla.app",
+  "funding": "https://github.com/sponsors/ZL-Asica"
+}

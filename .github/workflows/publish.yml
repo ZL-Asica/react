@@ -13,6 +13,7 @@ jobs:
     permissions:
       contents: read # Publish no need to write
       packages: write # Required for NPM publish
+      id-token: write # Required for JSR publish
 
     steps:
       # Step 1: Checkout code
@@ -61,6 +62,10 @@ jobs:
         run: npm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 8: Publish to JSR
+      - name: 🌟 Publish to JSR
+        run: npx jsr publish
 
   deploy-docs:
     runs-on: ubuntu-latest

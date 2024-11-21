@@ -39,7 +39,14 @@ import { useState } from 'react';
  * };
  * ```
  */
-export const useSessionStorage = <T>(key: string, initialValue: T) => {
+export const useSessionStorage = <T>(
+  key: string,
+  initialValue: T
+): {
+  value: T;
+  setValue: (value: T | ((currentValue: T) => T)) => void;
+  error: Error | null;
+} => {
   const getStoredValue = (key: string, defaultValue: T): [T, Error | null] => {
     try {
       const storedValue = globalThis.sessionStorage.getItem(key);

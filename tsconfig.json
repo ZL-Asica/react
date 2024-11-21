@@ -19,7 +19,8 @@
     "**/*.tsx",
     "docs/.vitepress/**/*.ts",
     "eslint.config.mjs",
-    "fix-markdown.mjs"
+    "fix-markdown.mjs",
+    "sync-version.mjs"
   ],
   "exclude": ["node_modules", "dist"]
 }

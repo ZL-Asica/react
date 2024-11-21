@@ -1,3 +1,5 @@
 pnpm changeset version
-git add CHANGELOG.md && git add .changeset/ && git add package.json && git add pnpm-lock.yaml
-lint-staged && pnpm run test:fast
+node sync-version.mjs
+git add CHANGELOG.md .changeset/ package.json pnpm-lock.yaml jsr.json
+lint-staged
+pnpm run test:fast
