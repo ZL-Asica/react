@@ -76,6 +76,7 @@ const vitePressConfig = {
     },
     socialLinks: [
       { icon: 'npm', link: 'https://www.npmjs.com/package/@zl-asica/react' },
+      { icon: 'JSR', link: 'https://jsr.io/@zl-asica/react' },
     ],
     search: {
       provider: 'local',

@@ -1,6 +1,7 @@
 # React Utilities 🚀
 
 [![npm version][npm-version-badge]][npm-versions-link]
+[![JSR][jsr-badge]][jsr-link]
 [![License][license-badge]][license-link]
 [![Coverage][coverage-badge]][coverage-link]
 [![Node.js][node-badge]][node-link]
@@ -73,6 +74,8 @@ This project is licensed under the [MIT License](./LICENSE).
 [coverage-link]: https://codecov.io/gh/ZL-Asica/React
 [eslint-badge]: https://img.shields.io/badge/eslint-4B32C3?logo=eslint&logoColor=white
 [eslint-link]: https://www.npmjs.com/package/eslint-config-zl-asica
+[jsr-badge]: https://jsr.io/badges/@zl-asica/react
+[jsr-link]: https://jsr.io/@zl-asica/react
 [license-badge]: https://img.shields.io/github/license/ZL-Asica/React
 [license-link]: https://github.com/ZL-Asica/React/blob/main/LICENSE
 [node-badge]: https://img.shields.io/badge/node%3E=16-339933?logo=node.js&logoColor=white

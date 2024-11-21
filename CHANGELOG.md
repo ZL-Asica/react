@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.3.2
+
+### Patch Changes
+
+- Add lost return type declaration. Publish to JSR
+
 ## 0.3.1
 
 ### Patch Changes
