@@ -1,5 +1,13 @@
 # @zl-asica/react
 
+## 0.3.5
+
+### Patch Changes
+
+- Add generateUniqueId for user decided length.
+
+  Support millisecond precision for generateUniqueId.
+
 ## 0.3.4
 
 ### Patch Changes
