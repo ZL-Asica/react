@@ -107,25 +107,25 @@ export const removeSpecialCharacters = (input: string): string => {
 };
 
 /**
- * Generates a unique identifier by hashing input strings, a timestamp, and a random value.
+ * Generates a unique identifier by hashing an array of input strings, a timestamp, and a random value.
  *
- * This function combines the provided inputs (`inputValue1`, `inputValue2`, and `inputValue3`) with
- * the current timestamp, applies the SHA-256 hashing algorithm (if supported), and returns a
- * hexadecimal string truncated to the specified length.
+ * This function combines the provided input strings (`inputValues`), the current timestamp, and
+ * an optional random bias (`randomBias`). It applies the SHA-256 hashing algorithm (if supported),
+ * and returns a hexadecimal string truncated to the specified length.
  *
  * If `crypto.subtle.digest` is not supported in the current environment, the function falls back to
  * generating a random string using `Math.random()` and the current timestamp. Note that the fallback
  * mechanism is less secure and should not be used for cryptographic purposes.
  *
  * The default length is 6 characters, which is sufficient for millions of records per millisecond
- * thanks to the inclusion of a highly random `inputValue3`. For shorter lengths, it is recommended
+ * thanks to the inclusion of a highly random `randomBias`. For shorter lengths, it is recommended
  * not to go below 4 characters to minimize the risk of collisions.
  *
  * @async
- * @param {string} inputValue1 - The primary input value (e.g., a user ID or unique identifier).
- * @param {string} inputValue2 - A secondary input value (e.g., a file name or resource key).
- * @param {string} [inputValue3=Math.random().toString(36)+Math.random().toString(36)] -
- *   An optional third input value. By default, this combines two random Base-36 strings, providing
+ * @param {string[]} inputValues - An array of input strings (e.g., user ID, file name, or other identifiers).
+ *   These will be concatenated to form part of the unique ID input.
+ * @param {string} [randomBias=Math.random().toString(36)+Math.random().toString(36)] -
+ *   An optional random bias string. By default, it combines two random Base-36 strings, providing
  *   approximately \(2^{104}\) possible combinations, significantly reducing collision risk.
  * @param {number} [length=6] - The desired length of the resulting unique ID.
  *   Must be at least 1. Defaults to 6 characters.
@@ -133,43 +133,39 @@ export const removeSpecialCharacters = (input: string): string => {
  *   If the environment lacks support for `crypto.subtle.digest`, a non-hashed random string is returned.
  *
  * @throws {RangeError} Throws if the `length` parameter is less than 1.
- * @throws {TypeError} Throws if `inputValue1`, `inputValue2`, or `inputValue3` are not strings,
+ * @throws {TypeError} Throws if any element in `inputValues` or `randomBias` is not a string,
  *   or if `length` is not a number.
  * @throws {Error} Throws if `crypto.subtle.digest` is not supported and no fallback mechanism is possible.
  *
  * @example
  * Example 1: Generate a unique ID with default length (6 characters) using `await`.
  * ```ts
- * const userId = 'user123';
- * const fileName = 'photo.png';
- * const id = await generateUniqueId(userId, fileName);
+ * const inputs = ['user123', 'photo.png'];
+ * const id = await generateUniqueId(inputs);
  * console.log(id); // Outputs: 'a1b2c3' (example result)
  * ```
  *
  * @example
  * Example 2: Generate a unique ID with a custom length (16 characters).
  * ```ts
- * const session = 'session456';
- * const document = 'document.pdf';
- * const metadata = 'additionalInfo';
+ * const inputs = ['session456', 'document.pdf', 'additionalInfo'];
+ * const customBias = 'customRandomBias123';
  * const customLength = 16;
- * const id = await generateUniqueId(session, document, metadata, customLength);
+ * const id = await generateUniqueId(inputs, customBias, customLength);
  * console.log(id); // Outputs: '1a2b3c4d5e6f7g8h' (example result)
  * ```
  *
  * @example
  * Example 3: Generate a unique ID in an environment without `crypto.subtle.digest`.
  * ```ts
- * const userId = 'user123';
- * const fileName = 'file.txt';
- * const id = await generateUniqueId(userId, fileName);
+ * const inputs = ['user123', 'file.txt'];
+ * const id = await generateUniqueId(inputs);
  * console.log(id); // Outputs: 'abc123def456' (example random result)
  * ```
  */
 export const generateUniqueId = async (
-  inputValue1: string,
-  inputValue2: string,
-  inputValue3: string = Math.random().toString(36) + Math.random().toString(36),
+  inputValues: string[],
+  randomBias: string = Math.random().toString(36) + Math.random().toString(36),
   length: number = 6
 ): Promise<string> => {
   // Validate length
@@ -179,7 +175,7 @@ export const generateUniqueId = async (
 
   const encoder = new TextEncoder();
   const uniqueId = encoder.encode(
-    inputValue1 + inputValue2 + inputValue3 + Date.now()
+    inputValues.join('') + Date.now() + randomBias
   );
 
   // Check for crypto.subtle.digest support

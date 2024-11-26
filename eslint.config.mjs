@@ -4,7 +4,6 @@ export default [
   ...zlAsicaTsReactConfig,
   {
     rules: {
-      'unicorn/expiring-todo-comments': 'off',
       'unicorn/filename-case': 'off',
       'import/group-exports': 'off',
       'unicorn/consistent-function-scoping': 'off',

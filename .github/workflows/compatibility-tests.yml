@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [16, 18, 20, 22]
-        react: [16, 17, 18]
+        node: [18, 20, 22]
+        react: [17, 18]
     name: Node.js ${{ matrix.node }} & React ${{ matrix.react }} Compatibility Test
     steps:
       # Step 1: Checkout code

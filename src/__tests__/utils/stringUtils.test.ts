@@ -81,43 +81,44 @@ describe('String Utils', () => {
 });
 
 describe('generateUniqueId', () => {
-  it('should generate an 6-character unique ID by default', async () => {
-    const id = await generateUniqueId('user123', 'photo.png');
+  it('should generate a 6-character unique ID by default', async () => {
+    const id = await generateUniqueId(['user123', 'photo.png']);
     expect(id).toBeTypeOf('string');
     expect(id.length).toBe(6);
   });
 
   it('should generate a unique ID with a custom length', async () => {
-    const id = await generateUniqueId('user123', 'photo.png', '', 16);
+    const id = await generateUniqueId(['user123', 'photo.png'], undefined, 16);
     expect(id).toBeTypeOf('string');
     expect(id.length).toBe(16);
   });
 
   it('should include input values in the hash', async () => {
-    const id1 = await generateUniqueId('user123', 'fileA');
-    const id2 = await generateUniqueId('user123', 'fileB');
+    const id1 = await generateUniqueId(['user123', 'fileA']);
+    const id2 = await generateUniqueId(['user123', 'fileB']);
     expect(id1).not.toEqual(id2);
   });
 
   it('should throw a RangeError if length is less than 1', async () => {
     await expect(
-      generateUniqueId('user123', 'photo.png', '', 0)
+      generateUniqueId(['user123', 'photo.png'], undefined, 0)
     ).rejects.toThrow(RangeError);
   });
 
-  it('should handle default inputValue3 correctly', async () => {
-    const id1 = await generateUniqueId('user123', 'photo.png');
-    const id2 = await generateUniqueId('user123', 'photo.png');
-    expect(id1).not.toEqual(id2); // Ensures default inputValue3 (random value) works
+  it('should handle default randomBias correctly', async () => {
+    const id1 = await generateUniqueId(['user123', 'photo.png']);
+    const id2 = await generateUniqueId(['user123', 'photo.png']);
+    expect(id1).not.toEqual(id2); // Ensures default randomBias (random value) works
   });
 
-  it('should generate consistent results for the same inputs and timestamp', async () => {
+  it('should generate consistent results for the same inputs, randomBias, and timestamp', async () => {
     const mockDate = 1_690_000_000_000; // Mock a fixed timestamp
     const originalDateNow = Date.now;
     globalThis.Date.now = () => mockDate;
 
-    const id1 = await generateUniqueId('fixedUser', 'fixedFile', '');
-    const id2 = await generateUniqueId('fixedUser', 'fixedFile', '');
+    const randomBias = 'fixedRandomBias';
+    const id1 = await generateUniqueId(['fixedUser', 'fixedFile'], randomBias);
+    const id2 = await generateUniqueId(['fixedUser', 'fixedFile'], randomBias);
     expect(id1).toEqual(id2);
 
     globalThis.Date.now = originalDateNow; // Restore original Date.now
@@ -133,7 +134,7 @@ describe('generateUniqueId', () => {
     } as unknown as Crypto);
 
     const length = 6;
-    const id = await generateUniqueId('user123', 'photo.png');
+    const id = await generateUniqueId(['user123', 'photo.png']);
 
     // Ensure fallbackSimple logic is used
     expect(id).toBeTypeOf('string');
@@ -141,5 +142,15 @@ describe('generateUniqueId', () => {
 
     // Restore original crypto object
     vi.stubGlobal('crypto', originalCrypto);
+  });
+
+  it('should correctly utilize randomBias for unique ID generation', async () => {
+    const randomBias1 = 'bias1';
+    const randomBias2 = 'bias2';
+
+    const id1 = await generateUniqueId(['user123', 'photo.png'], randomBias1);
+    const id2 = await generateUniqueId(['user123', 'photo.png'], randomBias2);
+
+    expect(id1).not.toEqual(id2); // Different biases should produce different IDs
   });
 });

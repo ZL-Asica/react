@@ -13,6 +13,7 @@ jobs:
     permissions:
       contents: read # Publish no need to write
       packages: write # Required for NPM publish
+      id-token: write # Required for JSR publish
 
     steps:
       # Step 1: Checkout code
@@ -34,7 +35,9 @@ jobs:
       - name: 📦 Set up Node.js and pnpm
         uses: pnpm/action-setup@v4
         with:
-          run_install: true
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
 
       # Step 4: Lint, format, and test
       - name: 🎨 Lint, format, and test
@@ -62,23 +65,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-jsr:
-    runs-on: ubuntu-latest
-
-    needs: publish # Only run after the publish job succeeds
-
-    permissions:
-      contents: read # Publish no need to write
-      id-token: write # Required for JSR publish
-
-    steps:
-      # Step 1: Checkout code
-      - name: 📂 Checkout code
-        uses: actions/checkout@v4
-
-      # Step 2: Publish to JSR
+      # Step 8: Publish to JSR
       - name: 🌟 Publish to JSR
-        run: npx jsr publish --allow-dirty
+        run: pnpm dlx jsr publish --allow-dirty
 
   deploy-docs:
     runs-on: ubuntu-latest
@@ -95,7 +84,9 @@ jobs:
       - name: 📦 Set up Node.js and pnpm
         uses: pnpm/action-setup@v4
         with:
-          run_install: true
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
 
       # Step 3: Build and deploy documentation
       - name: 📘 Build Documentation
