@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.3.9
+
+### Patch Changes
+
+- Fix nextjs issue in SSR
+
 ## 0.3.8
 
 ### Patch Changes

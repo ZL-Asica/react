@@ -95,6 +95,7 @@ export const useEventListener = <
   }, [debouncedHandler]);
 
   useEffect(() => {
+    if (typeof globalThis === 'undefined') return;
     const targetElement: T | Window = element?.current ?? window;
 
     if (!targetElement || !targetElement.addEventListener) return;
