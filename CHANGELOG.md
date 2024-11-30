@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.3.10
+
+### Patch Changes
+
+- Fix useScrollPosition may have undefined element
+
 ## 0.3.9
 
 ### Patch Changes

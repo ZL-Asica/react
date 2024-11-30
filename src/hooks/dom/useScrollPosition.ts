@@ -10,7 +10,7 @@ import { useEventListener } from './useEventListener';
  * A custom React hook to track the vertical scroll position of a specific element or the window.
  * Automatically updates whenever the user scrolls.
  *
- * @param {HTMLElement | null | undefined ｜ typeof globalThis} [element=undefined] - The target element to track. Defaults to `globalThis` which is window (global scroll position).
+ * @param {HTMLElement | typeof globalThis} [element=globalThis] - The target element to track. Defaults to `globalThis` which is window (global scroll position).
  * @param {boolean} [percentage=false] - Whether to return the scroll position as a percentage. Defaults to `false`.
  * @param {number} [debounce=0] - The debounce delay in milliseconds for the scroll event. Defaults to 0 (no debounce).
  * @param {number} [initialValue=0] - The initial scroll position value.
@@ -48,7 +48,7 @@ import { useEventListener } from './useEventListener';
  * ```
  */
 export const useScrollPosition = (
-  element?: HTMLElement | null | undefined | typeof globalThis,
+  element: HTMLElement | typeof globalThis = globalThis,
   percentage: boolean = false,
   debounce: number = 0,
   initialValue: number = 0
@@ -94,7 +94,7 @@ export const useScrollPosition = (
   useEventListener(
     'scroll',
     updateScrollPosition,
-    element instanceof HTMLElement ? { current: element } : undefined,
+    element ? { current: element } : undefined,
     undefined,
     debounce
   );
