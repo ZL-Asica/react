@@ -40,8 +40,8 @@ export const useHover = <T extends HTMLElement = HTMLElement>(
   const handleMouseOut = useCallback(() => setHovered(false), []);
 
   // Attach hover event listeners
-  useEventListener('mouseover', handleMouseOver, element.current);
-  useEventListener('mouseout', handleMouseOut, element.current);
+  useEventListener('mouseover', handleMouseOver, element);
+  useEventListener('mouseout', handleMouseOut, element);
 
   return isHovered;
 };

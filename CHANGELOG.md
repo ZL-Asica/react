@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.3.7
+
+### Patch Changes
+
+- Refactor useEventListener for wider use cases
+
 ## 0.3.6
 
 ### Patch Changes

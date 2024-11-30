@@ -84,7 +84,7 @@ export const useClickOutside = (
   handler: () => void,
   debounce: number = 0
 ): void => {
-  const listener = (event: MouseEvent | TouchEvent) => {
+  const listener = (event: Event) => {
     if (
       !reference.current ||
       reference.current.contains(event.target as Node)
@@ -95,6 +95,6 @@ export const useClickOutside = (
   };
 
   // Use our custom event listener hook with generic type
-  useEventListener('mousedown', listener, undefined, debounce);
-  useEventListener('touchstart', listener, undefined, debounce);
+  useEventListener('mousedown', listener, undefined, undefined, debounce);
+  useEventListener('touchstart', listener, undefined, undefined, debounce);
 };

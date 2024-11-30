@@ -1,6 +1,9 @@
 'use client';
 
+import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
+
+import { useAdaptiveEffect } from './useAdaptiveEffect';
 
 import { useDebouncedCallback } from '@/hooks/state';
 
@@ -8,73 +11,95 @@ import { useDebouncedCallback } from '@/hooks/state';
  * useEventListener
  *
  * A custom React hook for attaching an event listener to a target element with automatic cleanup.
- * This hook is useful for adding event listeners to DOM elements or the global `globalThis`/`document` object.
+ * This hook is useful for adding event listeners to DOM elements or the window object.
  * It also supports optional debouncing to limit how often the handler is invoked.
  *
  * @param {string} event - The name of the event to listen for (e.g., 'click', 'keydown').
  * @param {(event: T) => void} handler - The callback function to handle the event. Receives the event object as a parameter.
- * @param {EventTarget | null | undefined} [element=globalThis] - The target element to attach the event listener to. Defaults to `globalThis` if not provided.
+ * @param {EventTarget | null | undefined} [element=window] - The target element to attach the event listener to. Defaults to `globalThis` if not provided.
+ * @param {boolean | AddEventListenerOptions} [options] - Additional options to pass to `addEventListener`. Such as `capture` or `once`, etc.
  * @param {number} [debounce=0] - The debounce delay in milliseconds. Defaults to 0ms (no debounce).
  * @template T - The type of the event object.
  *
  * @example
- * Example: Adding a click event listener to a button with no debounce
+ * Example 1: Attach a window event listener with debounce
  * ```tsx
- * import { useRef } from 'react';
- * import { useEventListener } from '@zl-asica/react';
- *
- * const MyComponent = () => {
- *   const buttonRef = useRef<HTMLButtonElement | null>(null);
- *
- *   const handleClick = (event: MouseEvent) => {
- *     console.log('Button clicked!', event);
- *   };
- *
- *   useEventListener('click', handleClick, buttonRef.current);
- *
- *   return <button ref={buttonRef}>Click Me</button>;
- * };
+ * useEventListener('resize', () => {
+ *   console.log('Window resized!');
+ * }, undefined, undefined, 300);
  * ```
  *
  * @example
- * Example: Adding a keydown listener to the document with debounce
+ * Example 2: Attach a button click listener
  * ```tsx
- * import { useEventListener } from '@zl-asica/react';
+ * const buttonRef = useRef<HTMLButtonElement>(null);
+ * useEventListener('click', () => {
+ *   console.log('Button clicked!');
+ * }, buttonRef);
+ * ```
  *
- * const MyComponent = () => {
- *   const handleKeyDown = (event: KeyboardEvent) => {
- *     console.log('Key pressed:', event.key);
- *   };
+ * @example
+ * Example 3: Attach a document event listener
+ * ```tsx
+ * const documentRef = useRef<Document>(document);
+ * useEventListener('keydown', (event) => {
+ *   console.log('Key pressed:', event.key);
+ * }, documentRef, { capture: true });
+ * ```
  *
- *   useEventListener('keydown', handleKeyDown, document, 300); // Debounced by 300ms
- *
- *   return <div>Press any key!</div>;
- * };
+ * @example
+ * Example 4: Attach a media query change listener
+ * ```tsx
+ * const mediaQueryListRef = useRef(window.matchMedia('(max-width: 600px)'));
+ * useEventListener(
+ *   'change',
+ *   (event) => {
+ *     console.log('Media query matches:', event.matches);
+ *   },
+ *   mediaQueryListRef
+ * );
  * ```
  */
-export const useEventListener = <T extends Event>(
-  event: string,
-  handler: (event: T) => void,
-  element: EventTarget | null | undefined = globalThis,
-  debounce: number = 0
-): void => {
-  const debouncedCallbackReference = useRef<(event: T) => void>();
+export const useEventListener = <
+  KW extends keyof WindowEventMap,
+  KH extends keyof HTMLElementEventMap & keyof SVGElementEventMap,
+  KM extends keyof MediaQueryListEventMap,
+  T extends HTMLElement | SVGElement | MediaQueryList | Document = HTMLElement,
+>(
+  eventName: KW | KH | KM,
+  handler: (
+    event:
+      | WindowEventMap[KW]
+      | HTMLElementEventMap[KH]
+      | SVGElementEventMap[KH]
+      | MediaQueryListEventMap[KM]
+      | Event
+  ) => void,
+  element?: RefObject<T>,
+  options?: boolean | AddEventListenerOptions,
+  debounce?: number
+) => {
+  const savedHandler = useRef(handler);
+  const debouncedHandler = debounce
+    ? useDebouncedCallback(handler, debounce)
+    : handler;
 
-  // Update the debounced callback when the handler or debounce delay changes
+  // Update saved handler whenever it changes
+  useAdaptiveEffect(() => {
+    savedHandler.current = debouncedHandler;
+  }, [debouncedHandler]);
+
   useEffect(() => {
-    debouncedCallbackReference.current =
-      debounce === 0 ? handler : useDebouncedCallback(handler, debounce);
-  }, [handler, debounce]);
+    const targetElement: T | Window = element?.current ?? window;
 
-  useEffect(() => {
-    if (!element) return;
+    if (!targetElement || !targetElement.addEventListener) return;
 
-    const eventHandler = (event_: Event) =>
-      debouncedCallbackReference.current?.(event_ as T); // Safe access with optional chaining
-    element.addEventListener(event, eventHandler);
+    const eventListener = (event: Event) => savedHandler.current(event);
+
+    targetElement.addEventListener(eventName, eventListener, options);
 
     return () => {
-      element.removeEventListener(event, eventHandler);
+      targetElement.removeEventListener(eventName, eventListener, options);
     };
-  }, [event, element]);
+  }, [eventName, element, options]);
 };

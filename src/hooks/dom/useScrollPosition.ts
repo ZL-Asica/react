@@ -48,7 +48,7 @@ import { useEventListener } from './useEventListener';
  * ```
  */
 export const useScrollPosition = (
-  element: HTMLElement | null | undefined | typeof globalThis = globalThis,
+  element: HTMLElement | null | undefined,
   percentage: boolean = false,
   debounce: number = 0,
   initialValue: number = 0
@@ -56,19 +56,7 @@ export const useScrollPosition = (
   const [scrollPosition, setScrollPosition] = useState(initialValue);
 
   const updateScrollPosition = () => {
-    if (element === globalThis) {
-      const { scrollHeight, clientHeight } = document.documentElement;
-      const scrollableHeight = scrollHeight - clientHeight;
-      const scrollY = window.scrollY || 0;
-
-      if (percentage) {
-        setScrollPosition(
-          scrollableHeight === 0 ? 0 : (scrollY / scrollableHeight) * 100
-        );
-      } else {
-        setScrollPosition(scrollY);
-      }
-    } else if (element instanceof HTMLElement) {
+    if (element instanceof HTMLElement) {
       const scrollableHeight = element.scrollHeight - element.clientHeight;
 
       if (percentage) {
@@ -79,6 +67,18 @@ export const useScrollPosition = (
         );
       } else {
         setScrollPosition(element.scrollTop || 0);
+      }
+    } else {
+      const { scrollHeight, clientHeight } = document.documentElement;
+      const scrollableHeight = scrollHeight - clientHeight;
+      const scrollY = window.scrollY || 0;
+
+      if (percentage) {
+        setScrollPosition(
+          scrollableHeight === 0 ? 0 : (scrollY / scrollableHeight) * 100
+        );
+      } else {
+        setScrollPosition(scrollY);
       }
     }
   };
@@ -91,7 +91,13 @@ export const useScrollPosition = (
   }, [element, percentage]);
 
   // Attach event listener for scroll events
-  useEventListener('scroll', updateScrollPosition, element, debounce);
+  useEventListener(
+    'scroll',
+    updateScrollPosition,
+    element instanceof HTMLElement ? { current: element } : undefined,
+    undefined,
+    debounce
+  );
 
   return Number.isNaN(scrollPosition) ? 0 : scrollPosition;
 };

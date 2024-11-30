@@ -52,20 +52,22 @@ export const useKeyPress = (
 ): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
-  const downHandler = (event: KeyboardEvent) => {
-    if (event.key === targetKey) {
+  const downHandler = (event: Event) => {
+    const keyboardEvent = event as KeyboardEvent;
+    if (keyboardEvent.key === targetKey) {
       setKeyPressed(true);
     }
   };
 
-  const upHandler = (event: KeyboardEvent) => {
-    if (event.key === targetKey) {
+  const upHandler = (event: Event) => {
+    const keyboardEvent = event as KeyboardEvent;
+    if (keyboardEvent.key === targetKey) {
       setKeyPressed(false);
     }
   };
 
-  useEventListener('keydown', downHandler, globalThis, debounce);
-  useEventListener('keyup', upHandler, globalThis, debounce);
+  useEventListener('keydown', downHandler, undefined, undefined, debounce);
+  useEventListener('keyup', upHandler, undefined, undefined, debounce);
 
   return keyPressed;
 };

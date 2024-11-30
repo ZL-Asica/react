@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useEventListener } from './useEventListener';
 
@@ -63,7 +63,7 @@ import { useEventListener } from './useEventListener';
  */
 export const useIsBottom = (
   offset: number = 0,
-  element: HTMLElement | null | undefined = undefined,
+  element?: HTMLElement | null | undefined,
   debounce: number = 0,
   initialValue: boolean = false
 ): boolean => {
@@ -87,16 +87,21 @@ export const useIsBottom = (
     setIsBottom(isAtBottom);
   };
 
-  useEffect(() => {
-    // Initial check
-    if (typeof globalThis !== 'undefined') {
-      checkBottom();
-    }
-  }, [element, offset]);
-
   // Attach scroll and resize listeners
-  useEventListener('scroll', checkBottom, element ?? globalThis, debounce);
-  useEventListener('resize', checkBottom, element ?? globalThis, debounce);
+  useEventListener(
+    'scroll',
+    checkBottom,
+    element ? { current: element } : undefined,
+    undefined,
+    debounce
+  );
+  useEventListener(
+    'resize',
+    checkBottom,
+    element ? { current: element } : undefined,
+    undefined,
+    debounce
+  );
 
   return isBottom;
 };

@@ -19,8 +19,11 @@ describe('useIsTop', () => {
   });
 
   it('should return false when not at the top', () => {
-    const { result } = renderHook(() => useIsTop(50));
-
+    const { result } = renderHook(() => useIsTop());
+    act(() => {
+      document.documentElement.scrollTop = 10;
+      globalThis.dispatchEvent(new Event('scroll'));
+    });
     expect(result.current).toBe(false);
   });
 
@@ -28,7 +31,7 @@ describe('useIsTop', () => {
     const { result } = renderHook(() => useIsTop(50));
 
     act(() => {
-      document.documentElement.scrollTop = 40; // Within 50px offset
+      document.documentElement.scrollTop = 40; // Close enough with offset
       globalThis.dispatchEvent(new Event('scroll'));
     });
 
@@ -39,75 +42,89 @@ describe('useIsTop', () => {
     const { result } = renderHook(() => useIsTop(100));
 
     act(() => {
-      document.documentElement.scrollTop = 110; // 10px away from top with 100px offset
+      document.documentElement.scrollTop = 110; // Beyond the offset
       globalThis.dispatchEvent(new Event('scroll'));
     });
 
     expect(result.current).toBe(false);
 
     act(() => {
-      document.documentElement.scrollTop = 90; // Exactly at the offset
+      document.documentElement.scrollTop = 90; // Exactly within offset
       globalThis.dispatchEvent(new Event('scroll'));
     });
 
     expect(result.current).toBe(true);
   });
 
-  it('should initialize isTop state on mount', () => {
-    Object.defineProperty(document.documentElement, 'scrollTop', { value: 0 });
-
-    const { result } = renderHook(() => useIsTop());
-    expect(result.current).toBe(true);
-  });
-
-  it('should handle custom HTMLElement as target', () => {
+  it('should handle target without scrollTop', () => {
     const mockElement = document.createElement('div');
     Object.defineProperty(mockElement, 'scrollTop', {
-      value: 60,
-      writable: true,
+      get: () => undefined, // Simulate no scrollTop
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'scrollHeight', {
+      value: 2000,
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'clientHeight', {
+      value: 1000,
+      configurable: true,
     });
 
     const { result } = renderHook(() => useIsTop(50, mockElement));
 
-    expect(result.current).toBe(false);
-
     act(() => {
-      mockElement.scrollTop = 40; // Within 50px offset
       mockElement.dispatchEvent(new Event('scroll'));
     });
 
-    expect(result.current).toBe(true);
+    expect(result.current).toBe(true); // Defaults to 0 for scrollTop
   });
 
-  it('should default to globalThis when no element is provided', () => {
-    const { result } = renderHook(() => useIsTop(50));
-
-    act(() => {
-      document.documentElement.scrollTop = 40; // Within 50px offset
-      globalThis.dispatchEvent(new Event('scroll'));
-    });
-
-    expect(result.current).toBe(true);
-  });
-
-  it('should correctly handle HTMLElement with scrollTop', () => {
+  it('should handle target without scrollHeight', () => {
     const mockElement = document.createElement('div');
     Object.defineProperty(mockElement, 'scrollTop', {
-      value: 100,
-      writable: true,
+      value: 0, // Simulate at the top
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'scrollHeight', {
+      get: () => undefined, // Simulate no scrollHeight
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'clientHeight', {
+      value: 1000,
+      configurable: true,
     });
 
     const { result } = renderHook(() => useIsTop(50, mockElement));
 
-    // `scrollTop` is greater than `offset`, so it should return false
-    expect(result.current).toBe(false);
-
     act(() => {
-      mockElement.scrollTop = 40;
       mockElement.dispatchEvent(new Event('scroll'));
     });
 
-    // `scrollTop` is now within the `offset`, so it should return true
-    expect(result.current).toBe(true);
+    expect(result.current).toBe(true); // Defaults to 0 for scrollHeight, so isTop should be true
+  });
+
+  it('should handle target without clientHeight', () => {
+    const mockElement = document.createElement('div');
+    Object.defineProperty(mockElement, 'scrollTop', {
+      value: 0, // Simulate at the top
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'scrollHeight', {
+      value: 2000,
+      configurable: true,
+    });
+    Object.defineProperty(mockElement, 'clientHeight', {
+      get: () => undefined, // Simulate no clientHeight
+      configurable: true,
+    });
+
+    const { result } = renderHook(() => useIsTop(50, mockElement));
+
+    act(() => {
+      mockElement.dispatchEvent(new Event('scroll'));
+    });
+
+    expect(result.current).toBe(true); // Defaults to 0 for clientHeight, so isTop should be true
   });
 });

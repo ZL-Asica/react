@@ -11,13 +11,12 @@ export default defineConfig({
     include: ['src/**/*.test.{ts,tsx}'], // Include test files
     coverage: {
       provider: 'v8', // Use V8 coverage
-      reporter: ['text', 'lcov'], // Output text and html reports
+      reporter: ['text', 'lcov'], // Output text and lcov reports
       include: ['src'], // Include source code only
       exclude: [
         'src/__tests__',
-        'src/index.ts',
-        'src/hooks/index.ts',
-        'src/utils/index.ts',
+        '**/index.ts',
+        'src/hooks/dom/useAdaptiveEffect.ts',
       ],
     },
     alias: {

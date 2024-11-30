@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { RefObject } from 'react';
+
+import { useEventListener } from './useEventListener';
 
 /**
  * useInViewport
@@ -11,6 +13,7 @@ import type { RefObject } from 'react';
  *
  * @param {RefObject<HTMLElement>} ref - A React ref object pointing to the target element.
  * @param {number} [offset=0] - Offset in pixels to extend the viewport boundary.
+ * @param {number} [debounce=100] - The debounce delay in milliseconds for scroll and resize events.
  * @returns {boolean} `isVisible` - Whether the element is within the viewport (considering offset).
  *
  * @example
@@ -42,7 +45,8 @@ import type { RefObject } from 'react';
  */
 export const useInViewport = (
   reference: RefObject<HTMLElement>,
-  offset: number = 0
+  offset: number = 0,
+  debounce: number = 100
 ): boolean => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -50,6 +54,7 @@ export const useInViewport = (
     if (!reference.current) return;
 
     const rect = reference.current.getBoundingClientRect();
+
     const inViewport =
       rect.top <=
         (window.innerHeight || document.documentElement.clientHeight) +
@@ -63,17 +68,11 @@ export const useInViewport = (
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', checkVisibility);
-    window.addEventListener('resize', checkVisibility);
-
-    // Initial check
     checkVisibility();
-
-    return () => {
-      window.removeEventListener('scroll', checkVisibility);
-      window.removeEventListener('resize', checkVisibility);
-    };
   }, [reference, offset]);
+
+  useEventListener('scroll', checkVisibility, reference, undefined, debounce);
+  useEventListener('resize', checkVisibility, undefined, undefined, debounce);
 
   return isVisible;
 };

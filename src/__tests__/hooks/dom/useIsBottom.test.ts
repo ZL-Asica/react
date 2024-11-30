@@ -55,7 +55,6 @@ describe('useIsBottom', () => {
   it('should handle target without scrollTop', () => {
     const mockElement = document.createElement('div');
     Object.defineProperty(mockElement, 'scrollTop', {
-      // eslint-disable-next-line unicorn/no-useless-undefined
       get: () => undefined, // Simulate no scrollTop
       configurable: true,
     });
@@ -84,7 +83,6 @@ describe('useIsBottom', () => {
       configurable: true,
     });
     Object.defineProperty(mockElement, 'scrollHeight', {
-      // eslint-disable-next-line unicorn/no-useless-undefined
       get: () => undefined, // Simulate no scrollHeight
       configurable: true,
     });
@@ -113,7 +111,6 @@ describe('useIsBottom', () => {
       configurable: true,
     });
     Object.defineProperty(mockElement, 'clientHeight', {
-      // eslint-disable-next-line unicorn/no-useless-undefined
       get: () => undefined, // Simulate no clientHeight
       configurable: true,
     });

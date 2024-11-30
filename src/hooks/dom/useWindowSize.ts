@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useEventListener } from './useEventListener';
 
@@ -59,13 +59,7 @@ export const useWindowSize = (
     setSize({ width: window.innerWidth, height: window.innerHeight });
   };
 
-  useEffect(() => {
-    if (typeof globalThis !== 'undefined') {
-      handleResize(); // Initialize with current window size
-    }
-  }, []);
-
-  useEventListener('resize', handleResize, globalThis, debounce);
+  useEventListener('resize', handleResize, undefined, undefined, debounce);
 
   return size;
 };

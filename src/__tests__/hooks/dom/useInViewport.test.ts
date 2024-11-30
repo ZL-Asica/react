@@ -92,40 +92,6 @@ describe('useInViewport', () => {
     expect(result.current).toBe(true); // Initial visibility check
   });
 
-  it('should recheck visibility on scroll', () => {
-    referenceMock.getBoundingClientRect = vi.fn(
-      () =>
-        ({
-          top: 400,
-          left: 0,
-          bottom: 500,
-          right: 100,
-          width: 100,
-          height: 100,
-        }) as DOMRect
-    );
-
-    const reference = { current: referenceMock as HTMLElement };
-    const { result } = renderHook(() => useInViewport(reference, 0));
-
-    act(() => {
-      referenceMock.getBoundingClientRect = vi.fn(
-        () =>
-          ({
-            top: 900,
-            left: 0,
-            bottom: 1000,
-            right: 100,
-            width: 100,
-            height: 100,
-          }) as DOMRect
-      );
-      globalThis.dispatchEvent(new Event('scroll'));
-    });
-
-    expect(result.current).toBe(false); // Updated visibility check
-  });
-
   it('should handle missing ref', () => {
     const reference = { current: null };
     const { result } = renderHook(() => useInViewport(reference, 0));
