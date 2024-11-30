@@ -1,6 +1,6 @@
 {
   "name": "@zl-asica/react",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "A library of reusable React hooks, components, and utilities built by ZL Asica.",
   "keywords": [
     "react",
@@ -67,27 +67,27 @@
     "@changesets/cli": "^2.27.9",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
-    "@types/node": "^22.10.0",
+    "@types/node": "^22.10.1",
     "@types/react": "^18.3.12",
-    "@vitest/coverage-v8": "2.1.5",
-    "@vitest/ui": "^2.1.5",
+    "@vitest/coverage-v8": "2.1.6",
+    "@vitest/ui": "^2.1.6",
     "@zl-asica/prettier-config": "^1.0.9",
     "esbuild-plugin-preserve-directives": "^0.0.11",
-    "eslint": "^9.15.0",
+    "eslint": "^9.16.0",
     "eslint-config-zl-asica": "1.0.19",
     "husky": "^9.1.7",
     "jsdom": "^25.0.1",
     "lint-staged": "^15.2.10",
-    "prettier": "^3.4.0",
+    "prettier": "^3.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tsup": "^8.3.5",
-    "typedoc": "^0.26.11",
-    "typedoc-plugin-markdown": "^4.2.10",
+    "typedoc": "^0.27.2",
+    "typedoc-plugin-markdown": "^4.3.0",
     "typescript": "^5.7.2",
     "vitepress": "^1.5.0",
     "vitepress-sidebar": "^1.29.0",
-    "vitest": "^2.1.5"
+    "vitest": "^2.1.6"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
@@ -102,7 +102,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@9.14.2"
+  "packageManager": "pnpm@9.14.3"
 }

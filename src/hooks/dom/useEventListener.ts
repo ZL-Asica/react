@@ -14,7 +14,7 @@ import { useDebouncedCallback } from '@/hooks/state';
  * This hook is useful for adding event listeners to DOM elements or the window object.
  * It also supports optional debouncing to limit how often the handler is invoked.
  *
- * @param {string} event - The name of the event to listen for (e.g., 'click', 'keydown').
+ * @param {string} eventName - The name of the event to listen for (e.g., 'click', 'keydown').
  * @param {(event: T) => void} handler - The callback function to handle the event. Receives the event object as a parameter.
  * @param {EventTarget | null | undefined} [element=window] - The target element to attach the event listener to. Defaults to `globalThis` if not provided.
  * @param {boolean | AddEventListenerOptions} [options] - Additional options to pass to `addEventListener`. Such as `capture` or `once`, etc.
@@ -64,7 +64,12 @@ export const useEventListener = <
   KW extends keyof WindowEventMap,
   KH extends keyof HTMLElementEventMap & keyof SVGElementEventMap,
   KM extends keyof MediaQueryListEventMap,
-  T extends HTMLElement | SVGElement | MediaQueryList | Document = HTMLElement,
+  T extends
+    | HTMLElement
+    | SVGElement
+    | MediaQueryList
+    | Document
+    | typeof globalThis = HTMLElement,
 >(
   eventName: KW | KH | KM,
   handler: (
@@ -78,7 +83,7 @@ export const useEventListener = <
   element?: RefObject<T>,
   options?: boolean | AddEventListenerOptions,
   debounce?: number
-) => {
+): void => {
   const savedHandler = useRef(handler);
   const debouncedHandler = debounce
     ? useDebouncedCallback(handler, debounce)

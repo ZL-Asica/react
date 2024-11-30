@@ -37,7 +37,7 @@ bun add @zl-asica/react
 
 ```ts
 // With deno from JSR
-import { useLocalStorage } from 'jsr:@zl-asica/react@0.3.0';
+import { useLocalStorage } from 'jsr:@zl-asica/react';
 ```
 
 ## Usage
@@ -78,7 +78,7 @@ This project is licensed under the [MIT License](./LICENSE).
 [jsr-link]: https://jsr.io/@zl-asica/react
 [license-badge]: https://img.shields.io/github/license/ZL-Asica/React
 [license-link]: https://github.com/ZL-Asica/React/blob/main/LICENSE
-[node-badge]: https://img.shields.io/badge/node%3E=16-339933?logo=node.js&logoColor=white
+[node-badge]: https://img.shields.io/badge/node%3E=18-339933?logo=node.js&logoColor=white
 [node-link]: https://nodejs.org/
 [npm-version-badge]: https://img.shields.io/npm/v/@zl-asica/react
 [npm-versions-link]: https://www.npmjs.com/package/@zl-asica/react

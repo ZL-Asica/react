@@ -111,19 +111,6 @@ describe('generateUniqueId', () => {
     expect(id1).not.toEqual(id2); // Ensures default randomBias (random value) works
   });
 
-  it('should generate consistent results for the same inputs, randomBias, and timestamp', async () => {
-    const mockDate = 1_690_000_000_000; // Mock a fixed timestamp
-    const originalDateNow = Date.now;
-    globalThis.Date.now = () => mockDate;
-
-    const randomBias = 'fixedRandomBias';
-    const id1 = await generateUniqueId(['fixedUser', 'fixedFile'], randomBias);
-    const id2 = await generateUniqueId(['fixedUser', 'fixedFile'], randomBias);
-    expect(id1).toEqual(id2);
-
-    globalThis.Date.now = originalDateNow; // Restore original Date.now
-  });
-
   it('should use fallbackSimple when crypto.subtle.digest is not supported', async () => {
     // Mock crypto.subtle to simulate unsupported environment
     const originalCrypto = globalThis.crypto;

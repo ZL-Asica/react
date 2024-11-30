@@ -1,5 +1,11 @@
 # @zl-asica/react
 
+## 0.3.8
+
+### Patch Changes
+
+- Multiple minor JSDoc bugs, typos fixed
+
 ## 0.3.7
 
 ### Patch Changes

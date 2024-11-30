@@ -11,7 +11,7 @@ import { useEventListener } from './useEventListener';
  * A custom React hook to check if a DOM element is within the viewport.
  * Allows specifying an offset to consider elements near the edge of the viewport as "visible".
  *
- * @param {RefObject<HTMLElement>} ref - A React ref object pointing to the target element.
+ * @param {RefObject<HTMLElement>} reference - A React ref object pointing to the target element.
  * @param {number} [offset=0] - Offset in pixels to extend the viewport boundary.
  * @param {number} [debounce=100] - The debounce delay in milliseconds for scroll and resize events.
  * @returns {boolean} `isVisible` - Whether the element is within the viewport (considering offset).

@@ -121,7 +121,6 @@ export const removeSpecialCharacters = (input: string): string => {
  * thanks to the inclusion of a highly random `randomBias`. For shorter lengths, it is recommended
  * not to go below 4 characters to minimize the risk of collisions.
  *
- * @async
  * @param {string[]} inputValues - An array of input strings (e.g., user ID, file name, or other identifiers).
  *   These will be concatenated to form part of the unique ID input.
  * @param {string} [randomBias=Math.random().toString(36)+Math.random().toString(36)] -

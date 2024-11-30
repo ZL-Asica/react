@@ -48,7 +48,7 @@ import { useEventListener } from './useEventListener';
  * ```
  */
 export const useScrollPosition = (
-  element: HTMLElement | null | undefined,
+  element?: HTMLElement | null | undefined | typeof globalThis,
   percentage: boolean = false,
   debounce: number = 0,
   initialValue: number = 0

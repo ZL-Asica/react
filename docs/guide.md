@@ -19,7 +19,7 @@ bun add @zl-asica/react
 
 ```ts
 // With deno from JSR
-import { useLocalStorage } from 'jsr:@zl-asica/react@0.3.0';
+import { useLocalStorage } from 'jsr:@zl-asica/react';
 ```
 
 ## Usage
